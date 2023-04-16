@@ -7,9 +7,9 @@ import random
 
 import pickle
 
-DATADIR = "/Users/harrywang/Desktop/more_training_pics"
+DATADIR = "/Users/harrywang/Desktop/bin_data/more_training_pics"
 #DATADIR = "/Users/harrywang/Downloads/kaggle_data/Garbage_classification/Folder"
-CATEGORIES = ['glass', 'metal', 'paper', 'plastic', 'trash']
+CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
 
 IMG_SIZE = 128
 
@@ -23,15 +23,17 @@ def create_training_data():
         for img in os.listdir(path):
             try:
                 img_array = cv2.imread(os.path.join(path, img))
-		if img.shape[0] > img.shape[1]:
-                    cv2.rotate(img_array, cv2.ROTATE_90_CLOCKWISE)
+                print(type(img_array))
+                if img_array.shape[0] > img_array.shape[1]:
+                    print(img_array.shape)
+                    img_array = cv2.rotate(img_array, cv2.ROTATE_90_CLOCKWISE)
 
-	
                 new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
                 training_data.append([new_array, class_num])
 #                plt.imshow(new_array)
 #                plt.show()
             except Exception as e:
+                print(e)
                 pass
             
 
@@ -39,7 +41,7 @@ create_training_data()
 print(len(training_data))
 
 random.shuffle(training_data)
-#print(training_data[1])
+print(training_data[1])
 
 x = []
 y = []
@@ -50,9 +52,9 @@ for features, label in training_data:
     y.append(label)
     i+=1
 
+print('length: ', i)
 print('Image Dimensions :', x[1].shape)
 print('label Dimensions :', type(y))
-print("number of loops: ", i)
 
 x = np.array(x).reshape(-1, IMG_SIZE, IMG_SIZE, 3)
 y = np.array(y).reshape(-1, 1)

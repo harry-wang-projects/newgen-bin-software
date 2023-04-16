@@ -2,6 +2,7 @@ import os
 import cv2
 import numpy as np
 import tensorflow as tf
+import keras
 from tensorflow.keras.datasets import cifar10
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 from tensorflow.keras.models import Sequential
@@ -32,7 +33,7 @@ label_count = len(np.unique(y))
 print(label_count)
 
 #for multiple categories
-y = tf.keras.utils.to_categorical(y, num_classes=5)
+y = tf.keras.utils.to_categorical(y, num_classes=label_count)
 
 #x = x / 255.0
 
@@ -105,10 +106,10 @@ model.summary()
 #tensorboard stuff
 tensorboard = TensorBoard(log_dir = './{}'.format(NAME))
 
-tensorboard_callback = keras.callbacks.TensorBoard(log_dir = logdir, histogram_freq = 1)
-file_writer_cm = tf.summary.create_file_writer(logdir + '/cm')
+#tensorboard_callback = keras.callbacks.TensorBoard(log_dir = logdir, histogram_freq = 1)
+#file_writer_cm = tf.summary.create_file_writer(logdir + '/cm')
 
-cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=log_confusion_matrix)
+#cm_callback = keras.callbacks.LambdaCallback(on_epoch_end=log_confusion_matrix)
 
 model.fit(x, y, batch_size = 128, epochs = 20, validation_split = 0.3, callbacks = [tensorboard])
 

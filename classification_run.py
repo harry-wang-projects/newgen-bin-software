@@ -3,7 +3,7 @@ import os
 import tensorflow as tf
 
 DATADIR = "/Users/harrywang/Desktop/testing_pictures"
-CATEGORIES = ['glass', 'metal', 'paper', 'plastic', 'trash']
+CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
 
 
 def prepare(file_path):
@@ -17,11 +17,11 @@ model = tf.keras.models.load_model("./bad_testing_model.model")
 def predict(filepath):
     print(filepath)
     prediction = model.predict([prepare(filepath)])
-    for i in range(5):
+    for i in range(4):
         prediction[0][i] = round(prediction[0][i] * 100)    
 
     print(prediction)
-    for i in range(5):
+    for i in range(4):
         if(round(prediction[0][i] / 100) == 1):
             print(CATEGORIES[i])
 
