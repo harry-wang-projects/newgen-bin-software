@@ -1,0 +1,72 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import os
+import cv2
+
+import random
+
+import pickle
+
+DATADIR = "/Users/harrywang/Desktop/more_training_pics"
+#DATADIR = "/Users/harrywang/Downloads/kaggle_data/Garbage_classification/Folder"
+CATEGORIES = ['glass', 'metal', 'paper', 'plastic', 'trash']
+
+IMG_SIZE = 128
+
+training_data = []
+
+def create_training_data():
+    for category in CATEGORIES:
+        path = os.path.join(DATADIR, category)
+        class_num = CATEGORIES.index(category)
+        print(class_num)
+        for img in os.listdir(path):
+            try:
+                img_array = cv2.imread(os.path.join(path, img))
+		if img.shape[0] > img.shape[1]:
+                    cv2.rotate(img_array, cv2.ROTATE_90_CLOCKWISE)
+
+	
+                new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
+                training_data.append([new_array, class_num])
+#                plt.imshow(new_array)
+#                plt.show()
+            except Exception as e:
+                pass
+            
+
+create_training_data()
+print(len(training_data))
+
+random.shuffle(training_data)
+#print(training_data[1])
+
+x = []
+y = []
+i = 0
+
+for features, label in training_data:
+    x.append(features)
+    y.append(label)
+    i+=1
+
+print('Image Dimensions :', x[1].shape)
+print('label Dimensions :', type(y))
+print("number of loops: ", i)
+
+x = np.array(x).reshape(-1, IMG_SIZE, IMG_SIZE, 3)
+y = np.array(y).reshape(-1, 1)
+
+pickle_out = open("./x.pickle", "wb")
+pickle.dump(x, pickle_out)
+pickle_out.close()
+
+pickle_out = open("./y.pickle", "wb")
+pickle.dump(y, pickle_out)
+pickle_out.close()
+
+#pickle_in = open("./x.pickle", "rb")
+#x = pickle.load(pickle_in)
+#print(x[1])
+
+
