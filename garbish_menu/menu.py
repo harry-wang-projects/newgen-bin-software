@@ -214,6 +214,7 @@ class pages():
     def page(self):
         page1 = Menu("  Begin",(850,460),"Welcome, please click Begin to","Scan your ID",text1color=(97,255,77))
         message = page1.main()
+        #need to add a section that scans ur id. 
         page2 = Menu(" Yes ",(650,460),"Is your trash wholly composed of","Metal, Plastic, Paper?",text1color=(97,255,77),text2="  No ",text2center=(1050, 460),text2color=(255,59,59))
         recycle_check = page2.main()
         if recycle_check != " Yes ": 
@@ -249,6 +250,7 @@ class pages():
             reward="5 G-Coin"
         else:
             reward="1 G-Coin"
+        #need to store this in the database. 
         self.reward.append(reward)
         self.spin(reward,material)
         return ["Success",material.replace(" ",""),reward]
@@ -257,7 +259,8 @@ class pages():
         spin = Menu(" Exit",(250,600),"Your reward:","Placeholder",text1color=(97,255,77),text2=" Spin",text2center=(1050, 600),text2color=(246, 142, 51),spinner_reward_page=True,spinner_reward_=reward)
         check = spin.main()
         if check==" Spin":
-            self.spinner(material)
+            item = self.spinner(material) #could extract data from here through returns
+            
         
     def fail(self):
         fail = Menu("  Okay",(850,460),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
