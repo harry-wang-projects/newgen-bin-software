@@ -4,7 +4,7 @@ from os import path
 import os 
 import time
 from random import random
-from pygame._sdl2 import touch
+# from pygame._sdl2 import touch
 pygame.init()
 
 xlname = pygame.font.Font("Somatic-Rounded.otf",150)
@@ -73,11 +73,11 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
 
     def events(self):
         key = pygame.key.get_pressed()
-        if touch_available:
-            self.finger_data = touch.get_finger(0)
+        # if touch_available:
+        #     self.finger_data = touch.get_finger(0)
         for event in pygame.event.get():
-            if touch_available and self.finger_data['pressure']>=0.1:
-                self.screen_touch=True
+            # if touch_available and self.finger_data['pressure']>=0.1:
+            #     self.screen_touch=True
             if event.type == pygame.QUIT:
                 self.keep_looping = False
                 pygame.quit()
@@ -130,16 +130,16 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             self.mouse_pos = None
             if len(self.message) > 0:
                 self.keep_looping = False
-        if touch_available and self.screen_touch:
-            if self.text1_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
-                self.message = self.text1_text
-            if not self.text2_text==None and self.text2_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
-                self.message = self.text2_text
-            if not self.text3_text==None and self.text3_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
-                self.message = self.text3_text
-            self.mouse_pos = None
-            if len(self.message) > 0:
-                self.keep_looping = False
+        # if touch_available and self.screen_touch:
+        #     if self.text1_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
+        #         self.message = self.text1_text
+        #     if not self.text2_text==None and self.text2_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
+        #         self.message = self.text2_text
+        #     if not self.text3_text==None and self.text3_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
+        #         self.message = self.text3_text
+        #     self.mouse_pos = None
+        #     if len(self.message) > 0:
+        #         self.keep_looping = False
                 
         if self.spinner:
             temp=0
@@ -292,11 +292,11 @@ class pages():
                 else:
                     success.write(temp[0]+" "+str(time.ctime())+"\n")
                 
-touch_available=True
-try:
-    deviceid = touch.get_device(0)
-except:
-    touch_available = False
+# touch_available=True
+# try:
+#     deviceid = touch.get_device(0)
+# except:
+#     touch_available = False
 screen_width=1280
 screen_height=720
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (screen_width,screen_height))
