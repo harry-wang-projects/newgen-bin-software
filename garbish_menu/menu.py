@@ -22,7 +22,8 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
     def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="JCSE Recycling",screen_width=1280,screen_height=720,spinner=False,spinner_rewards=None,spinner_chance=None,spinner_reward_page=False,spinner_reward_=None): #spinner_chance adds up to 1, its a list.
         self.width = screen_width
         self.height = screen_height
-        self.screen = pygame.display.set_mode((self.width, self.height),flags=pygame.FULLSCREEN)
+        # self.screen = pygame.display.set_mode((self.width, self.height),flags=pygame.FULLSCREEN)
+        self.screen=screen
         pygame.display.set_caption(title)
         self.clock = pygame.time.Clock()
         self.font = font
@@ -237,6 +238,7 @@ class pages():
         if finish==" Exit":
             return ["Success",material.replace(" ","")]
         self.spinner(material)
+        return ["Success",material.replace(" ","")]
         
     def spinner(self,material):
         page7 = Menu(" Exit",(250,600),"Spend 1 R Buck to draw a random reward?","Placeholder",text1color=(97,255,77),text2=" Spin",text2center=(1050, 600),text2color=(246, 142, 51),spinner=True,spinner_rewards=["1 G-Coin","5 G-Coin","25 G-Coin","5 G-Coin","1 G-Coin"],spinner_chance=[0.30,0.15,0.10,0.15,0.30])
@@ -297,8 +299,8 @@ class pages():
 #     deviceid = touch.get_device(0)
 # except:
 #     touch_available = False
-screen_width=1024
-screen_height=600
+screen_width=1280
+screen_height=720
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (screen_width,screen_height))
 fairy = pygame.image.load("recyclefairy.png")
 confetti_gif=[]
@@ -309,5 +311,6 @@ for count in range(len(os.listdir("reward_confetti"))):
 for count in range(len(os.listdir("confetti2"))):
     confetti_gif2.append(pygame.transform.scale(pygame.image.load(f"confetti2/{count+1}.png"),(screen_width,screen_height)))
     max_frame2=count
+screen = pygame.display.set_mode((screen_width, screen_height),flags=pygame.FULLSCREEN)
 page = pages()
 page.main()
