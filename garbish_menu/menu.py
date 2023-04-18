@@ -22,7 +22,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
     def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="JCSE Recycling",screen_width=1280,screen_height=720,spinner=False,spinner_rewards=None,spinner_chance=None,spinner_reward_page=False,spinner_reward_=None): #spinner_chance adds up to 1, its a list.
         self.width = screen_width
         self.height = screen_height
-        self.screen = pygame.display.set_mode((self.width, self.height))
+        self.screen = pygame.display.set_mode((self.width, self.height),flags=pygame.FULLSCREEN)
         pygame.display.set_caption(title)
         self.clock = pygame.time.Clock()
         self.font = font
@@ -104,7 +104,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         self.screen.blit(background, (0, 0))
         if self.spinner or self.spinner_reward_page:
             self.textboxrect = pygame.Rect(75, 30,self.width-150, 100)
-        pygame.draw.rect(self.screen, (214,240,232), self.textboxrect, border_radius= 30)
+        pygame.draw.rect(self.screen, (214,240,232), self.textboxrect, border_radius=30)
         text = sname.render(self.st, True, BLACK, None)
         textRect = text.get_rect(center=(self.width/2,self.height/2))
         textRect.center = ((self.width/2,80))
@@ -297,8 +297,8 @@ class pages():
 #     deviceid = touch.get_device(0)
 # except:
 #     touch_available = False
-screen_width=1280
-screen_height=720
+screen_width=1024
+screen_height=600
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (screen_width,screen_height))
 fairy = pygame.image.load("recyclefairy.png")
 confetti_gif=[]
