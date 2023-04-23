@@ -7,7 +7,7 @@ import random
 
 import pickle
 
-DATADIR = "/Users/harrywang/Desktop/bin_data/more_training_pics"
+DATADIR = "D:/bin_data/more_training_pics"
 #DATADIR = "/Users/harrywang/Downloads/kaggle_data/Garbage_classification/Folder"
 CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
 
@@ -28,10 +28,15 @@ def create_training_data():
                     print(img_array.shape)
                     img_array = cv2.rotate(img_array, cv2.ROTATE_90_CLOCKWISE)
 
+                gauss_noise = np.zeros((img_array.shape[0], img_array.shape[1], 3), dtype = np.uint8)
+                cv2.randn(gauss_noise, 128, 20)
+                gauss_noise = (gauss_noise * 0.1).astype(np.uint8)
+                img_array = cv2.add(img_array, gauss_noise)
+
                 new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
                 training_data.append([new_array, class_num])
-#                plt.imshow(new_array)
-#                plt.show()
+                #plt.imshow(new_array)
+                #plt.show()
             except Exception as e:
                 print(e)
                 pass

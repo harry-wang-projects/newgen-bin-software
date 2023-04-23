@@ -25,7 +25,7 @@ import matplotlib.pyplot as plt
 import pickle
 
 
-CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
+CATEGORIES = ['metal', 'non-metal']
 
 #load the array
 x = pickle.load(open("./x.pickle", "rb"))
@@ -35,11 +35,21 @@ x = np.array(x)
 
 y = np.array(y)
 
+#label_count = len(np.unique(y))
+#print(label_count)
+
+#for multiple categories
+#y = tf.keras.utils.to_categorical(y, num_classes=label_count)
+for i in range (len(y)):
+    if y[i] == 0:
+        y[i] = 0
+    else:
+        y[i] = 1
+
 label_count = len(np.unique(y))
 print(label_count)
 
-#for multiple categories
-y = tf.keras.utils.to_categorical(y, num_classes=label_count)
+y = tf.keras.utils.to_categorical(y, num_classes = label_count)
 
 #split data
 xtrain, xval, ytrain, yval = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=42)
@@ -55,7 +65,7 @@ print(y.shape)
 
 #name of model
 
-NAME = "garbage_recyclable_classification_model"
+NAME = "metal_classification_model"
 
 #maxpooling variables
 dense_layer = 2
@@ -78,6 +88,8 @@ def plot_confusion_matrix(cm, class_names):
        cm (array, shape = [n, n]): a confusion matrix of integer classes
        class_names (array, shape = [n]): String names of the integer classes
     """
+
+    print(class_names)
 
     figure = plt.figure(figsize=(8, 8))
     plt.imshow(cm, interpolation='nearest', cmap=plt.cm.Blues)
@@ -154,14 +166,14 @@ model.add(MaxPooling2D(pool_size = (2, 2)))
 model.add(Dropout(0.4))
 
 #64 part
-model.add(Conv2D(64, (3, 3), activation = "relu"))
-model.add(MaxPooling2D(pool_size = (2, 2)))
-model.add(Dropout(0.4))
-
-#128 part
-#model.add(Conv2D(128, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
+#model.add(Conv2D(64, (3, 3), activation = "relu"))
 #model.add(MaxPooling2D(pool_size = (2, 2)))
 #model.add(Dropout(0.4))
+
+#128 part
+model.add(Conv2D(128, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
+model.add(MaxPooling2D(pool_size = (2, 2)))
+model.add(Dropout(0.4))
 
 #256 part
 #model.add(Conv2D(256, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
@@ -183,7 +195,7 @@ model.add(Flatten())
 #end
 #model.add(Dense(1024, activation = 'relu'))
 #model.add(Dense(512, activation = 'relu'))
-#model.add(Dense(256, activation = 'relu'))
+model.add(Dense(256, activation = 'relu'))
 model.add(Dense(128, activation = 'relu'))
 model.add(Dropout(0.2))
 model.add(Dense(64, activation = 'relu'))
@@ -196,7 +208,7 @@ model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = [
 model.summary()
 
 #run the model
-model.fit(xtrain, ytrain, batch_size = 64, epochs = 100, callbacks = [tensorboard_callback, cm_callback], validation_data=(xval, yval))
+model.fit(xtrain, ytrain, batch_size = 64, epochs = 10, callbacks = [tensorboard_callback, cm_callback], validation_data=(xval, yval))
 
-model.save("current_testing_model.model")
+model.save("metal_testing_model.model")
 
