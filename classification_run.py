@@ -2,15 +2,19 @@ import cv2
 import os
 import tensorflow as tf
 
+from classification_specs import IMG_SIZE, number_of_colors 
+
 DATADIR = "D:/bin_data/testing_pictures"
 CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
 
 
 def prepare(file_path):
-    IMG_SIZE = 128  # 50 in txt-based
-    img_array = cv2.imread(file_path)  # read in the image, convert to grayscale
+    if number_of_colors == 1:
+        img_array = cv2.imread(file_path, cv2.IMREAD_GRAYSCALE)  # read in the image, convert to grayscale
+    else:
+        img_array = cv2.imread(file_path)
     new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))  # resize image to match model's expected sizing
-    return new_array.reshape(-1, IMG_SIZE, IMG_SIZE, 3)  # return the image with shaping that TF wants.
+    return new_array.reshape(-1, IMG_SIZE, IMG_SIZE, number_of_colors)  # return the image with shaping that TF wants.
 
 model = tf.keras.models.load_model("./current_testing_model.model")
 
