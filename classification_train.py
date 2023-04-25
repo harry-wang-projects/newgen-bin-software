@@ -154,7 +154,7 @@ NAME = "{}-conv-{}-nodes{}-dense{}".format(conv_layer, layer_size, dense_layer, 
 print(NAME)
 
 #initial convolution
-model.add(Conv2D(64, (3, 3), input_shape = x.shape[1:], activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
+model.add(Conv2D(64, (3, 3), input_shape = x.shape[1:], activation = "relu", kernel_regularizer=regularizers.l2(l=0.02)))
 model.add(MaxPooling2D(pool_size = (2, 2)))
 
 #64 part
@@ -163,9 +163,8 @@ model.add(MaxPooling2D(pool_size = (2, 2)))
 #model.add(Dropout(0.4))
 
 #128 part
-#model.add(Conv2D(128, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
-#model.add(MaxPooling2D(pool_size = (2, 2)))
-#model.add(Dropout(0.4))
+model.add(Conv2D(128, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.02)))
+model.add(MaxPooling2D(pool_size = (2, 2)))
 
 #256 part
 #model.add(Conv2D(256, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
@@ -186,8 +185,8 @@ model.add(Flatten())
 
 #end
 #model.add(Dense(1024, activation = 'relu'))
-model.add(Dense(256, activation = 'relu'))
-model.add(Dense(100, activation = 'relu'))
+model.add(Dense(180, activation = 'relu'))
+model.add(Dense(90, activation = 'relu'))
 model.add(Dense(64, activation = 'relu'))
 model.add(Dropout(0.6))
 model.add(Dense(label_count, activation = 'softmax'))
@@ -199,7 +198,7 @@ model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = [
 model.summary()
 
 #run the model
-model.fit(xtrain, ytrain, batch_size = 64, epochs = 30, callbacks = [tensorboard_callback, cm_callback], validation_data=(xval, yval))
+model.fit(xtrain, ytrain, batch_size = 32, epochs = 20, callbacks = [tensorboard_callback, cm_callback], validation_data=(xval, yval))
 
 model.save("current_testing_model.model")
 
