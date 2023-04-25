@@ -7,8 +7,7 @@ from classification_specs import IMG_SIZE, number_of_colors
 
 CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
 
-
-model = tf.keras.models.load_model("./current_testing_model.model")
+model = tf.keras.models.load_model("./tiny_good_model1.model")
 
 def get_pic():
 
@@ -40,5 +39,3 @@ def get_pic():
 
 
     return CATEGORIES[max_category]
-
-print(get_pic())
