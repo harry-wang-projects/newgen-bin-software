@@ -39,3 +39,5 @@ def get_pic():
 
 
     return CATEGORIES[max_category]
+
+print(get_pic())
