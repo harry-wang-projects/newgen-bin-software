@@ -1,15 +1,34 @@
 import serial
+from time import sleep
 
-ser = serial.Serial('/dev/cu.usbserial-1410', 9600, timeout=1)
+ser = serial.Serial('/dev/cu.usbserial-1420', 9600, timeout=1)
 ser.flush()
 
-def lock():
-    ser.write('L')
-    ser.flush()
+ser.write(b'R')
 
 def unlock():
-    ser.write('U')
+    ser.write(b'U')
     ser.flush()
+    sleep(0.1)
+    triggered = False
+    while True:
+        if ser.in_waiting > 0:
+            while ser.in_waiting > 0:
+                line = ser.readline().decode('utf-8').rstrip()
+
+            main = line.split("[", 3)
+            print(main)
+ 
+            lhs = (main[len(main) - 1].split(" ", 3))
+            rhs = (main[len(main) - 1].split(" ", 3))
+            print('point2')
+            print(lhs)
+            print('point3')
+            if int(lhs[1]) == 0:
+                print('true!!')
+                return
+                 
+        
 
 def lock_state():
     line = ''
@@ -18,10 +37,10 @@ def lock_state():
             line = ser.readline().decode('utf-8').rstrip()
             break
 
-        main = line.split("[", 1)
+        main = line.split("[", 2)
 
-        lhs = main.split(" ", 2)
-        return int(lhs)
+        lhs = main[0].split(" ", 3)
+        return int(lhs[1])
 
 def get_weight():
     line = ''
@@ -34,3 +53,10 @@ def get_weight():
  
         lhs = main.split(" ", 1)
         return float(lhs)
+
+
+print(get_weight)
+
+print(lock_state)
+
+unlock()
