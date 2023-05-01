@@ -4,22 +4,23 @@ from os import path
 import os 
 import time
 from random import random
+from hardware_commands import unlock
 # from pygame._sdl2 import touch
 pygame.init()
 
-xlname = pygame.font.Font("Somatic-Rounded.otf",150)
-lname = pygame.font.Font("Somatic-Rounded.otf",115)
-name = pygame.font.Font("Somatic-Rounded.otf",110)
-xxsname = pygame.font.Font("Somatic-Rounded.otf",20)
-xsname = pygame.font.Font("Somatic-Rounded.otf",30)
-sname = pygame.font.Font("Somatic-Rounded.otf",50)
-mname = pygame.font.Font("Somatic-Rounded.otf",80)
+xlname = pygame.font.Font("./Somatic-Rounded.otf",150)
+lname = pygame.font.Font("./Somatic-Rounded.otf",115)
+name = pygame.font.Font("./Somatic-Rounded.otf",110)
+xxsname = pygame.font.Font("./Somatic-Rounded.otf",20)
+xsname = pygame.font.Font("./Somatic-Rounded.otf",30)
+sname = pygame.font.Font("./Somatic-Rounded.otf",50)
+mname = pygame.font.Font("./Somatic-Rounded.otf",80)
 
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 class Menu(): #creates a menu with 3 buttons and the title on the top.
-    def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="JCSE Recycling",screen_width=1280,screen_height=720,spinner=False,spinner_rewards=None,spinner_chance=None,spinner_reward_page=False,spinner_reward_=None): #spinner_chance adds up to 1, its a list.
+    def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="JCSE Recycling",screen_width=720,screen_height=576,spinner=False,spinner_rewards=None,spinner_chance=None,spinner_reward_page=False,spinner_reward_=None): #spinner_chance adds up to 1, its a list.
         self.width = screen_width
         self.height = screen_height
         # self.screen = pygame.display.set_mode((self.width, self.height),flags=pygame.FULLSCREEN)
@@ -105,7 +106,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         self.screen.blit(background, (0, 0))
         if self.spinner or self.spinner_reward_page:
             self.textboxrect = pygame.Rect(75, 30,self.width-150, 100)
-        pygame.draw.rect(self.screen, (214,240,232), self.textboxrect, border_radius=30)
+        pygame.draw.rect(self.screen, (214,240,232), self.textboxrect, 30)
         text = sname.render(self.st, True, BLACK, None)
         textRect = text.get_rect(center=(self.width/2,self.height/2))
         textRect.center = ((self.width/2,80))
@@ -225,6 +226,8 @@ class pages():
             return ["Fail"]
         page3 = Menu("         Metal   ",(850,355),"Please select","Metal, Plastic, Paper",font=mname,font_render=lname,text1color=(39,39,39),text2="        Plastic  ",text2center=(850,499),text2color=(90,90,90),text3="         Paper  ",text3center=(850,645),text3color=(172,172,172))
         material = page3.main()
+        material = material.replace(" ", "")
+
         page4 = Menu(" Yes ",(650,460),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2="  No ",text2center=(1050, 460),text2color=(255,59,59))
         uncotaminated = page4.main()
         if uncotaminated != " Yes ": 
@@ -235,6 +238,9 @@ class pages():
         if confirmation != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ","")]
+
+        unlock()
+
         page6 = Menu(" Exit",(650,460),"Your trash is being consumed","Please stand by...",text1color=(97,255,77),text2=" Spin",text2center=(1050, 460),text2color=(246, 142, 51))
         finish = page6.main()
         if finish==" Exit":
@@ -305,8 +311,8 @@ class pages():
 #1280,720
 # screen_width=720
 # screen_height=480
-screen_width=1280 #0.5625
-screen_height=720
+screen_width=720 #0.5625
+screen_height=576
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (screen_width,screen_height))
 fairy = pygame.image.load("recyclefairy.png")
 confetti_gif=[]
