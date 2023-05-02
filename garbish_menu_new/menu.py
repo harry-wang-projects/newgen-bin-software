@@ -4,7 +4,7 @@ from os import path
 import os 
 import time
 from random import random
-from camera_run import get_pic#, get_barcode
+from camera_run_temp import get_pic#, get_barcode
 import tensorflow as tf
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
@@ -14,7 +14,6 @@ for m in get_monitors():
 # screen_height=480
 # screen_width=720
 print(screen_height,screen_width)
-model = tf.keras.models.load_model("./tiny_good_model1.model")
 
 pygame.init()
 
@@ -260,7 +259,7 @@ class pages():
         page3 = Menu("         Metal   ",(850*wm,355*hm),"Please select","Metal, Plastic, Paper",font=mname,font_render=lname,text1color=(39,39,39),text2="        Plastic  ",text2center=(850*wm,499*hm),text2color=(90,90,90),text3="         Paper  ",text3center=(850*wm,645*hm),text3color=(172,172,172))
         material = page3.main()
         material = material.replace(" ","")
-        pic_check = get_pic(model)
+        pic_check = get_pic()
         same_material=False
         print(pic_check)
         if pic_check==material:
