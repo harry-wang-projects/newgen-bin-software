@@ -1,3 +1,3 @@
 number_of_colors = 1
 
-IMG_SIZE = 128
+IMG_SIZE = 160
