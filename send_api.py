@@ -7,7 +7,7 @@ import requests
 
 def send_to_server(bin_id, bin_password, receiver, trash_type, image, success):
     url = 'https://recycling.student.isf.edu.hk:81/ngrecycle'
-    myobj = {'bin_id': bin_id, 'bin_password': bin_password, 'receiver_id': receiver, 'type': str(trash_type), "image": image, 'success': succes}
+    myobj = {'bin_id': bin_id, 'bin_password': bin_password, 'receiver_id': receiver, 'type': str(trash_type), "image": image, 'success': success}
 s
     x = requests.post(url, json = myobj, verify=False)
 

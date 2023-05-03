@@ -8,6 +8,13 @@ from camera_run_temp import get_pic#, get_barcode
 import tensorflow as tf
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
+
+from camera_run import get_pic#, get_barcode
+from hardware_commands import get_weight, unlock
+import garbage_list
+from send_api import send_to_server
+from barcode_get import get_barcode
+
 for m in get_monitors():
     screen_height=m.height
     screen_width=m.width
@@ -16,6 +23,10 @@ for m in get_monitors():
 print(screen_height,screen_width)
 
 pygame.init()
+
+bin_id = 'B2_1'
+bin_password = '8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92'
+student_id = '0012113'
 
 #since 1200 x 720 was the starting screen resolution, adjustments must be made accordingly.
 hm = screen_height/720
@@ -243,7 +254,7 @@ class pages():
         # while True:
         page1 = Menu(" Begin",(850*wm,460*hm),"Welcome, please click Begin to","Scan your ID",text1color=(97,255,77))
         message = page1.main()
-        id_card="0012113"
+        id_card=get_barcode()
         # while True:
         #     barcode = Menu("Scanning",(850*wm,460*hm),"Place your id under the camera","Please standby (Click Scanning to continue)",text1color=(97,255,77))
         #     barcode.main()
@@ -259,24 +270,26 @@ class pages():
         page3 = Menu("         Metal   ",(850*wm,355*hm),"Please select","Metal, Plastic, Paper",font=mname,font_render=lname,text1color=(39,39,39),text2="        Plastic  ",text2center=(850*wm,499*hm),text2color=(90,90,90),text3="         Paper  ",text3center=(850*wm,645*hm),text3color=(172,172,172))
         material = page3.main()
         material = material.replace(" ","")
-        pic_check = get_pic()
         same_material=False
+        pic_check = verify_image(material)
         print(pic_check)
-        if pic_check==material:
-            print("unlock")
-            #unlcok
-            same_material=True
-        material_types=['metal', 'paper', 'plastic']
-        material_other=True
+        if pic_check == True:
+            print("Verify successful!")
+            same_material = True
+
+        material_other = True
+        material_num = 0
         if not same_material:
             for i in range(3):
-                if pic_check==material_types[i]:
-                    material=material_types[i]
+                if material == trash_list[i + 1].name:
+                    material_num = trash_list[i + 1]
                     self.incorrect_material(id_card=id_card)
                     break
             if material_other:
                 self.unknown_material(id_card=id_card)
                 return ["Fail"]
+
+
         #get_weight - regurns wieght in kg
         #lock(), unlock() - physical stuff
         page4 = Menu(" Yes ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
@@ -284,13 +297,28 @@ class pages():
         if uncotaminated != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]
+        weight_measurement = get_weight()
+        if weight_measurement > trash_list[material_num].minweight and weight_measurement < trash_list[material_num].maxweight:
+            print('correct weight')
+        else:
+            print('incorrect weight')
+
         page5 = Menu(" Yes ",(650*wm,460*hm),"Your trash is suitable for recycling","Confirm?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         confirmation = page5.main()
         if confirmation != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]
+
+
         page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","Please stand by...",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)
         finish = page6.main()
+        
+        #unlock
+        unlock()
+
+        #send api
+        send_to_server(bin_id, bin_password, student_id, material_num, '1299391923', '1')
+
         if finish=="Exit ":
             return ["Success",material.replace(" ",""),id_card]
         self.spinner(material,id_card)

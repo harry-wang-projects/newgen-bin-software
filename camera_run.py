@@ -2,13 +2,14 @@ import cv2
 import numpy as np
 import os
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 from classification_specs import IMG_SIZE, number_of_colors 
 
 CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
 
 
-model = tf.keras.models.load_model("./current_testing_model.model")
+model = tf.keras.models.load_model("./may1_best_model.model")
 
 def get_pic():
 
@@ -22,11 +23,18 @@ def get_pic():
 
     img_array = cv2.cvtColor(img_array, cv2.COLOR_BGR2GRAY)
 
-    new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))  # resize image to match model's expected sizing
+    new_array = cv2.resize(img_array, (IMG_SIZE + 40, IMG_SIZE + 40))  # resize image to match model's expected sizing
+
+    ratio = new_array[20:IMG_SIZE + 20, 20:IMG_SIZE + 20]
+    new_array = cv2.resize(ratio, (IMG_SIZE, IMG_SIZE))
+
+    plt.imshow(new_array, cmap = 'gray')
+    plt.show()
 
     new_array = new_array / 255.0
 
     new_array = np.array(new_array).reshape(-1, IMG_SIZE, IMG_SIZE, number_of_colors)  # return the image with shaping that TF wants.
+
 
     prediction = model.predict(new_array)
     for i in range(4):
