@@ -26,7 +26,15 @@ def get_all_trash():
     get_class = decoded_thing["results"][i]
     trash_list.append(Trashitem(get_class["item_id"], get_class["item_name"], get_class["bucks_change"], get_class["min_weight"], get_class["max_weight"]))
 
+def get_all_trash_manual():
+    trash_list.append(Trashitem(0, "Nothing", 0, 1, 10))
+    trash_list.append(Trashitem(1, "Metal", 10, 1, 10))
+    trash_list.append(Trashitem(2, "Paper", 10, 1, 10)) 
+    trash_list.append(Trashitem(3, "Plastic", 10, 1, 10))
+    trash_list.append(Trashitem(4, "Trash", 0, 1, 10))
 
-get_all_trash()
+
+#get_all_trash()
+get_all_trash_manual()
 for i in range (len(trash_list)):
   print(trash_list[i])
