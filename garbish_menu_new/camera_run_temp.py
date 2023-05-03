@@ -5,7 +5,7 @@ import tensorflow as tf
 
 from classification_specs import IMG_SIZE, number_of_colors 
 
-CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
+CATEGORIES = ['Metal', 'Paper', 'Plastic', 'Trash']
 
 
 model = tf.keras.models.load_model("./may1_best_model.model")
@@ -13,6 +13,16 @@ model = tf.keras.models.load_model("./may1_best_model.model")
 def get_pic():
 
     return CATEGORIES[3]
+
+def verify_classes(name):
+    for i in range(10):
+        obtained_str = get_pic()
+        print("got str: [" +  obtained_str + "], trash: [Trash]")
+        if obtained_str == name:
+            return True
+        sleep(0.2)
+    return False
+
 
 # def get_barcode():
 
