@@ -30,5 +30,7 @@ def get_barcode():
                     id_card=id_card+str(8)
                 if key[pygame.K_9]:
                     id_card=id_card+str(9)
-                    
+                if key[pygame.K_RETURN]:
+                    return id_card
+                
     return id_card
