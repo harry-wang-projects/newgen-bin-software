@@ -4,12 +4,11 @@ from os import path
 import os 
 import time
 from random import random
-from camera_run import get_pic#, get_barcode
-import tensorflow as tf
+from camera_run_temp import get_pic#, get_barcode
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
 from barcode_get import get_barcode
-
+from hardware_commands import get_weight, unlock
 
 
 for m in get_monitors():
@@ -18,7 +17,6 @@ for m in get_monitors():
 # screen_height=480
 # screen_width=720
 print(screen_height,screen_width)
-model = tf.keras.models.load_model("./tiny_good_model1.model")
 
 pygame.init()
 
