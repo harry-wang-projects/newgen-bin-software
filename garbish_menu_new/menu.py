@@ -4,13 +4,12 @@ from os import path
 import os 
 import time
 from random import random
-from camera_run import get_pic#, get_barcode
-import tensorflow as tf
+from camera_run_temp import get_pic, verify_classes#, get_barcode
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
 from barcode_get import get_barcode
-
-
+from garbage_list import trash_list
+from hardware_commands import get_weight, unlock
 
 for m in get_monitors():
     screen_height=m.height
@@ -18,7 +17,6 @@ for m in get_monitors():
 # screen_height=480
 # screen_width=720
 print(screen_height,screen_width)
-model = tf.keras.models.load_model("./tiny_good_model1.model")
 
 pygame.init()
 
@@ -263,19 +261,15 @@ class pages():
         page3 = Menu("         Metal   ",(850*wm,355*hm),"Please select","Metal, Plastic, Paper",font=mname,font_render=lname,text1color=(39,39,39),text2="        Plastic  ",text2center=(850*wm,499*hm),text2color=(90,90,90),text3="         Paper  ",text3center=(850*wm,645*hm),text3color=(172,172,172))
         material = page3.main()
         material = material.replace(" ","")
-        pic_check = get_pic(model)
-        same_material=False
-        print(pic_check)
-        if pic_check==material:
+        print(material)
+        same_material = verify_classes(material) 
+        if same_material:
             print("unlock")
             #unlcok
-            same_material=True
-        material_types=['metal', 'paper', 'plastic']
         material_other=True
         if not same_material:
             for i in range(3):
-                if pic_check==material_types[i]:
-                    material=material_types[i]
+                if material==trash_list[i + 1].name:
                     self.incorrect_material(id_card=id_card)
                     break
             if material_other:
@@ -290,6 +284,7 @@ class pages():
             return ["Fail",material.replace(" ",""),id_card]
         page5 = Menu(" Yes ",(650*wm,460*hm),"Your trash is suitable for recycling","Confirm?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         confirmation = page5.main()
+        unlock()
         if confirmation != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]

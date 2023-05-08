@@ -1,18 +1,15 @@
-import cv2
 import numpy as np
 import os
-import tensorflow as tf
+from time import sleep
 
 from classification_specs import IMG_SIZE, number_of_colors 
 
 CATEGORIES = ['Metal', 'Paper', 'Plastic', 'Trash']
 
 
-model = tf.keras.models.load_model("./may1_best_model.model")
-
 def get_pic():
 
-    return CATEGORIES[3]
+    return CATEGORIES[2]
 
 def verify_classes(name):
     for i in range(10):
