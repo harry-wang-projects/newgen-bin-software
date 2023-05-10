@@ -10,6 +10,7 @@ from screeninfo import get_monitors
 from barcode_get import get_barcode
 from garbage_list import trash_list
 from hardware_commands import get_weight, unlock
+from send_api import send_to_server, id_default, password_default
 
 for m in get_monitors():
     screen_height=m.height
@@ -267,10 +268,12 @@ class pages():
             print("unlock")
             #unlcok
         material_other=True
+        material_num = 0
         if not same_material:
             for i in range(3):
                 if material==trash_list[i + 1].name:
                     self.incorrect_material(id_card=id_card)
+                    material_num = i
                     break
             if material_other:
                 self.unknown_material(id_card=id_card)
@@ -285,6 +288,8 @@ class pages():
         page5 = Menu(" Yes ",(650*wm,460*hm),"Your trash is suitable for recycling","Confirm?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         confirmation = page5.main()
         unlock()
+
+
         if confirmation != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]
@@ -308,8 +313,9 @@ class pages():
         else:
             reward="1 G-Coin"
         #need to store this in the database. 
-        self.reward.append(reward)
-        self.spin(reward,material,id_card)
+        #self.reward.append(reward)
+        #self.spin(reward,material,id_card)
+        send_to_server(id_default, password_default, id_card, material_num, 1)
         return ["Success",material.replace(" ",""),reward,id_card]
         
     def spin(self,reward,material,id_card):
