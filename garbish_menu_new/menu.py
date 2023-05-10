@@ -273,11 +273,22 @@ class pages():
             for i in range(3):
                 if material==trash_list[i + 1].name:
                     self.incorrect_material(id_card=id_card)
-                    material_num = i
+                    material_num = i + 1
                     break
             if material_other:
                 self.unknown_material(id_card=id_card)
                 return ["Fail"]
+        
+        #get weight of it
+        weight_inrange = True
+        val = get_weight * 10
+        if val > trash_list[material_num].min_weight and val < trash_list[material_num].max_weight:
+            weight_inrange = True
+        else:
+            weight_inrange = False
+            return ["Fail"]
+
+
         #get_weight - regurns wieght in kg
         #lock(), unlock() - physical stuff
         page4 = Menu(" Yes ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
