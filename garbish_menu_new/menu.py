@@ -282,6 +282,9 @@ class pages():
         #get weight of it
         weight_inrange = True
         val = get_weight * 10
+        print("weight of the thing:", val)
+        print("minweight:", trash_list[material_num].min_weight)
+        print("maxweight:", trash_list[material_num].max_weight)
         if val > trash_list[material_num].min_weight and val < trash_list[material_num].max_weight:
             weight_inrange = True
         else:
