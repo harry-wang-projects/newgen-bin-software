@@ -20,6 +20,8 @@ def verify_classes(name):
         sleep(0.2)
     return False
 
+def verify_classes_fake(name):
+    return True
 
 # def get_barcode():
 

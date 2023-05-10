@@ -14,6 +14,7 @@ def send_to_server(bin_id, bin_password, receiver, trash_type, image, success):
     myobj = {'bin_id': bin_id, 'bin_password': bin_password, 'receiver_id': receiver, 'type': str(trash_type), "image": image, 'success': success}
     x = requests.post(url, json = myobj, verify=False)
 
+    print("results:")
     print(x.content)
 
     if x.text == '{"results" : "success"}':

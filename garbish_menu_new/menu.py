@@ -4,7 +4,7 @@ from os import path
 import os 
 import time
 from random import random
-from camera_run_temp import get_pic, verify_classes#, get_barcode
+from camera_run_temp import get_pic, verify_classes, verify_classes_fake
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
 from barcode_get import get_barcode
@@ -263,7 +263,7 @@ class pages():
         material = page3.main()
         material = material.replace(" ","")
         print(material)
-        same_material = verify_classes(material) 
+        same_material = verify_classes_fake(material) 
         if same_material:
             print("unlock")
             #unlcok
@@ -281,7 +281,8 @@ class pages():
         
         #get weight of it
         weight_inrange = True
-        val = get_weight * 10
+        val = get_weight() * 10
+        print("type: ", type(val))
         print("weight of the thing:", val)
         print("minweight:", trash_list[material_num].min_weight)
         print("maxweight:", trash_list[material_num].max_weight)
@@ -289,7 +290,7 @@ class pages():
             weight_inrange = True
         else:
             weight_inrange = False
-            return ["Fail"]
+            #return ["Fail"]
 
 
         #get_weight - regurns wieght in kg
@@ -301,12 +302,16 @@ class pages():
             return ["Fail",material.replace(" ",""),id_card]
         page5 = Menu(" Yes ",(650*wm,460*hm),"Your trash is suitable for recycling","Confirm?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         confirmation = page5.main()
-        unlock()
+      
 
+        unlock()
 
         if confirmation != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]
+        #send_to_server(id_default, password_default, id_card, material_num, "asdf", 1)
+
+
         page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","Please stand by...",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":
@@ -329,7 +334,6 @@ class pages():
         #need to store this in the database. 
         #self.reward.append(reward)
         #self.spin(reward,material,id_card)
-        send_to_server(id_default, password_default, id_card, material_num, 1)
         return ["Success",material.replace(" ",""),reward,id_card]
         
     def spin(self,reward,material,id_card):
