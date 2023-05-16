@@ -248,17 +248,12 @@ class pages():
         message = page1.main()
         while True:
             barcode = Menu("Scanning",(850*wm,460*hm),"Place your id under the camera","Please standby (Click Scanning to continue)",text1color=(97,255,77))
-            barcode.main()
+            barcode.draw()
             id_card = get_barcode()
             if not id_card==None:
                 break
         # (650,460) (1050, 460)
-        page2 = Menu(" Yes ",(650*wm,460*hm),"Is your trash wholly composed of","Metal, Plastic, Paper?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm,460*hm),text2color=(255,59,59),student_id=id_card)
-        recycle_check = page2.main()
-        if recycle_check != " Yes ": 
-            self.fail()
-            return ["Fail"]
-        page3 = Menu("         Metal   ",(850*wm,355*hm),"Please select","Metal, Plastic, Paper",font=mname,font_render=lname,text1color=(39,39,39),text2="        Plastic  ",text2center=(850*wm,499*hm),text2color=(90,90,90),text3="         Paper  ",text3center=(850*wm,645*hm),text3color=(172,172,172))
+        page3 = Menu("         Metal   ",(850*wm,355*hm),"Please select","Metal, Plastic, Paper",font=mname,font_render=lname,text1color=(120,120,120),text2="        Plastic  ",text2center=(850*wm,499*hm),text2color=(146,146,146),text3="         Paper  ",text3center=(850*wm,645*hm),text3color=(172,172,172))
         material = page3.main()
         material = material.replace(" ","")
         print(material)
@@ -280,12 +275,6 @@ class pages():
         page4 = Menu(" Yes ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         uncotaminated = page4.main()
         if uncotaminated != " Yes ": 
-            self.fail()
-            return ["Fail",material.replace(" ",""),id_card]
-        page5 = Menu(" Yes ",(650*wm,460*hm),"Your trash is suitable for recycling","Confirm?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
-        confirmation = page5.main()
-        unlock()
-        if confirmation != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]
         page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","Please stand by...",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)

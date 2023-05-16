@@ -21,6 +21,7 @@ def verify_classes(name):
     return False
 
 
+
 # def get_barcode():
 
 # #    if number_of_colors == 1:
