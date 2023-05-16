@@ -5,11 +5,16 @@ import requests
 #receiver = student id
 #type is a number. 1 = plastic, 2 = paper, 3 = metal, 4 = trash
 
+id_default = "B2_1"
+password_default = "8d969eef6ecad3c29a3a629280e686cf0c3f5d5a86aff3ca12020c923adc6c92"
+
+
 def send_to_server(bin_id, bin_password, receiver, trash_type, image, success):
     url = 'https://recycling.student.isf.edu.hk:81/ngrecycle'
     myobj = {'bin_id': bin_id, 'bin_password': bin_password, 'receiver_id': receiver, 'type': str(trash_type), "image": image, 'success': success}
     x = requests.post(url, json = myobj, verify=False)
 
+    print("results:")
     print(x.content)
 
     if x.text == '{"results" : "success"}':

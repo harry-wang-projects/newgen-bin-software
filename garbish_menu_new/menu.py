@@ -4,12 +4,13 @@ from os import path
 import os 
 import time
 from random import random
-from camera_run_temp import get_pic, verify_classes#, get_barcode
+from camera_run_temp import get_pic, verify_classes, verify_classes_fake
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
 from barcode_get import get_barcode
 from garbage_list import trash_list
 from hardware_commands import get_weight, unlock
+from send_api import send_to_server, id_default, password_default
 
 for m in get_monitors():
     screen_height=m.height
@@ -257,19 +258,36 @@ class pages():
         material = page3.main()
         material = material.replace(" ","")
         print(material)
-        same_material = verify_classes(material) 
+        same_material = verify_classes_fake(material) 
         if same_material:
             print("unlock")
             #unlcok
         material_other=True
+        material_num = 0
         if not same_material:
             for i in range(3):
                 if material==trash_list[i + 1].name:
                     self.incorrect_material(id_card=id_card)
+                    material_num = i + 1
                     break
             if material_other:
                 self.unknown_material(id_card=id_card)
                 return ["Fail"]
+        
+        #get weight of it
+        weight_inrange = True
+        val = get_weight() * 10
+        print("type: ", type(val))
+        print("weight of the thing:", val)
+        print("minweight:", trash_list[material_num].min_weight)
+        print("maxweight:", trash_list[material_num].max_weight)
+        if val > trash_list[material_num].min_weight and val < trash_list[material_num].max_weight:
+            weight_inrange = True
+        else:
+            weight_inrange = False
+            #return ["Fail"]
+
+
         #get_weight - regurns wieght in kg
         #lock(), unlock() - physical stuff
         page4 = Menu(" Yes ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
@@ -277,6 +295,8 @@ class pages():
         if uncotaminated != " Yes ": 
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]
+        unlock()
+        #send_to_server(id_default, password_default, id_card, material_num, "asdf", 1)
         page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","Please stand by...",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":
@@ -297,8 +317,8 @@ class pages():
         else:
             reward="1 G-Coin"
         #need to store this in the database. 
-        self.reward.append(reward)
-        self.spin(reward,material,id_card)
+        #self.reward.append(reward)
+        #self.spin(reward,material,id_card)
         return ["Success",material.replace(" ",""),reward,id_card]
         
     def spin(self,reward,material,id_card):
