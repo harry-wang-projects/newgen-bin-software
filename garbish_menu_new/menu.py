@@ -248,7 +248,7 @@ class pages():
         page1 = Menu(" Begin",(850*wm,460*hm),"Welcome, please click Begin to","Scan your ID",text1color=(97,255,77))
         message = page1.main()
         while True:
-            barcode = Menu("Scanning",(850*wm,460*hm),"Place your id under the camera","Please standby (Click Scanning to continue)",text1color=(97,255,77))
+            barcode = Menu("Scanning",(850*wm,460*hm),"Place your id under the camera","Please standby",text1color=(97,255,77))
             barcode.draw()
             id_card = get_barcode()
             if not id_card==None:
@@ -259,10 +259,9 @@ class pages():
         material = material.replace(" ","")
         print(material)
         same_material = verify_classes_fake(material) 
-        if same_material:
-            print("unlock")
-            #unlcok
-        material_other=True
+        material_other=False
+        if not same_material:
+            material_other=True
         material_num = 0
         if not same_material:
             for i in range(3):
@@ -285,7 +284,7 @@ class pages():
             weight_inrange = True
         else:
             weight_inrange = False
-            #return ["Fail"]
+            return ["Fail"]
 
 
         #get_weight - regurns wieght in kg
