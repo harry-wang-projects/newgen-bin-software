@@ -7,7 +7,7 @@ from random import random
 from camera_run_temp import get_pic, verify_classes#, get_barcode
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
-from barcode_get import get_barcode
+# from barcode_get import get_barcode
 from garbage_list import trash_list
 # from hardware_commands import get_weight, unlock
 
@@ -76,7 +76,9 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         self.cycle=cycle 
         self.start_time = pygame.time.get_ticks()
         if self.cycle:
-            self.cycle_time=10 #sec
+            self.cycle_time=10000 #msec
+            self.animation=animation
+            self.max_frame=max_frames[animation-1]
         self.mouse_pos = None
         self.keep_looping = True
         self.message = ""
@@ -84,52 +86,49 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         self.button_cooldown = 3
         self.current_frame=0
         self.next_frame=True
-        self.animation=animation
-        self.max_frame=max_frames[animation-1]
+        self.detect_id_card = ""
 
-    # def barcode(self):
-    #     id_card=""
-    #     for i in range(7):
-    #         for event in pygame.event.get():
-    #             if event.type == pygame.QUIT:
-    #                 pygame.quit()
-    #                 sys.exit()
-    #             if event.type == pygame.KEYDOWN:
-    #                 key=pygame.key.get_pressed()
-    #                 if key[pygame.K_0]:
-    #                     id_card=id_card+str(0)
-    #                 if key[pygame.K_1]:
-    #                     id_card=id_card+str(1)
-    #                 if key[pygame.K_2]:
-    #                     id_card=id_card+str(2)
-    #                 if key[pygame.K_3]:
-    #                     id_card=id_card+str(3)
-    #                 if key[pygame.K_4]:
-    #                     id_card=id_card+str(4)
-    #                 if key[pygame.K_5]:
-    #                     id_card=id_card+str(5)
-    #                 if key[pygame.K_6]:
-    #                     id_card=id_card+str(6)
-    #                 if key[pygame.K_7]:
-    #                     id_card=id_card+str(7)
-    #                 if key[pygame.K_8]:
-    #                     id_card=id_card+str(8)
-    #                 if key[pygame.K_9]:
-    #                     id_card=id_card+str(9)
-    #                 if key[pygame.K_RETURN]:
-    #                     return id_card
-    #     if len(id_card)==7:  
-    #         try:
-    #             id_card = int(id_card)
-    #             if not id_card==None:
-    #                 return id_card
-    #         except TypeError:
-    #             print("typeerror")
-    #     return "unsuccess"
-
+    def barcode(self,event):
+        if self.student_id==None:
+            if event == pygame.KEYDOWN:
+                key=pygame.key.get_pressed()
+                if key[pygame.K_0]:
+                    self.detect_id_card=str(self.detect_id_card)+str(0)
+                if key[pygame.K_1]:
+                    self.detect_id_card=str(self.detect_id_card)+str(1)
+                if key[pygame.K_2]:
+                    self.detect_id_card=str(self.detect_id_card)+str(2)
+                if key[pygame.K_3]:
+                    self.detect_id_card=str(self.detect_id_card)+str(3)
+                if key[pygame.K_4]:
+                    self.detect_id_card=str(self.detect_id_card)+str(4)
+                if key[pygame.K_5]:
+                    self.detect_id_card=str(self.detect_id_card)+str(5)
+                if key[pygame.K_6]:
+                    self.detect_id_card=str(self.detect_id_card)+str(6)
+                if key[pygame.K_7]:
+                    self.detect_id_card=str(self.detect_id_card)+str(7)
+                if key[pygame.K_8]:
+                    self.detect_id_card=str(self.detect_id_card)+str(8)
+                if key[pygame.K_9]:
+                    self.detect_id_card=str(self.detect_id_card)+str(9)
+                if key[pygame.K_RETURN]:
+                    return self.detect_id_card
+            if len(str(self.detect_id_card))==7:  
+                try:
+                    self.detect_id_card = int(self.detect_id_card)
+                    if not self.detect_id_card==None:
+                        return self.detect_id_card
+                except TypeError:
+                    print("typeerror")
+            return "unsuccess"
 
     def events(self):
         current_time = pygame.time.get_ticks()
+        if (current_time-self.start_time)%50<=5:
+            self.next_frame=True
+        if self.cycle and current_time-self.start_time>=self.cycle_time:
+            self.keep_looping=False
         if touch_available:
             self.finger_data = touch.get_finger(0)
         for event in pygame.event.get():
@@ -143,14 +142,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 mouse_pressed = pygame.mouse.get_pressed()
                 if mouse_pressed[0] == 1:
                     self.mouse_pos = pygame.mouse.get_pos()
-            if current_time-self.start_time%0.025<=0.005:
-                print("next")
-                self.next_frame=True #change to only current frame
-            if self.cycle and current_time-self.start_time%1<=0.005:
-                self.cycle_time=self.cycle_time-1
-            if self.cycle and self.cycle_time<=0:
-                self.keep_looping=False
-            
+            self.barcode(event.type)
 
     def draw_text_button(self,text, myrect, font, font_color=(0,0,0), background_color=(255,255,255), use_inner=False):
         inner_area = pygame.Rect((-22, -8, myrect[2], myrect[3]))
@@ -162,11 +154,8 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             self.screen.blit(txt_surface, myrect)
     
     def animation_detect(self):
-        print("true")
-        print(self.animation)
-        if self.animation!=None:
+        if self.cycle:
             if self.animation==1:
-                print("1 animation")
                 self.screen.blit(river1[self.current_frame],(0,0))
             if self.animation==2:
                 self.screen.blit(river2[self.current_frame],(0,0))
@@ -177,16 +166,13 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
     def draw(self):
         self.screen.blit(background, (0, 0))
         self.animation_detect()
-        if self.next_frame:
-            print("true animation")
-            self.animation_detect()
-            if not self.current_frame>=self.max_frame:
-                print("add frame")
-                self.current_frame+=1
-            else:
-                print("frame reset")
-                self.current_frame=0
-            self.next_frame=False
+        if self.cycle:
+            if self.next_frame:
+                if not self.current_frame>=self.max_frame:
+                    self.current_frame+=1
+                else:
+                    self.current_frame=0
+                self.next_frame=False
         pygame.draw.rect(self.screen, (214,240,232), self.textboxrect, border_radius=30)
         text = msname.render(self.st, True, BLACK, None)
         textRect = text.get_rect(center=(self.width/2,self.height/2))
@@ -238,11 +224,9 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 pygame.quit()
                 sys.exit()
             if self.student_id==None:
-                pass
-                # id_card = get_barcode()
-                # if not id_card==None and id_card!="unsuccess":
-                #     self.keep_looping=False
-                #     return id_card
+                if len(str(self.detect_id_card))==7:
+                    self.keep_looping=False
+                    return self.detect_id_card
         print(self.message,"Success")
         return self.message
 
@@ -341,19 +325,19 @@ river1 = []
 max_frames=[]
 max_frame=0
 for count in range(len(os.listdir("river1"))):
-    river1.append(pygame.transform.scale(pygame.image.load(f"river1/{count+1}.png"),(screen_width,screen_height)))
+    river1.append(pygame.transform.scale(pygame.image.load(f"river1/{count+1}.jpeg"),(screen_width,screen_height)))
     max_frame=count
 max_frames.append(max_frame)
     
 river2 = []
 for count in range(len(os.listdir("river2"))):
-    river2.append(pygame.transform.scale(pygame.image.load(f"river2/{count+1}.png"),(screen_width,screen_height)))
+    river2.append(pygame.transform.scale(pygame.image.load(f"river2/{count+1}.jpeg"),(screen_width,screen_height)))
     max_frame=count
 max_frames.append(max_frame)
 
 forest = []
 for count in range(len(os.listdir("forest"))):
-    forest.append(pygame.transform.scale(pygame.image.load(f"forest/{count+1}.png"),(screen_width,screen_height)))
+    forest.append(pygame.transform.scale(pygame.image.load(f"forest/{count+1}.jpeg"),(screen_width,screen_height)))
     max_frame=count
 max_frames.append(max_frame)
 

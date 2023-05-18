@@ -1,57 +1,65 @@
-# import serial
-# from time import sleep
+import serial
+from time import sleep
 
-# ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-# ser.flush()
+#set mode = 0 to disable reading serial
+mode = 1
+weightmode = 0
 
-# ser.write(b'R')
+if mode == 1:
+    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
+    ser.flush()
 
-# def unlock():
-#     ser.write(b'U')
-#     ser.flush()
-#     sleep(0.5)
-#     triggered = False
-#     while True:
-#         if ser.in_waiting > 0:
-#             while ser.in_waiting > 0:
-#                 line = ser.readline().decode().rstrip()
+    ser.write(b'R')
 
-#             main = line.split("[", 3)
-#             print(main)
+
+def unlock():
+    if mode == 0:
+        sleep(1)
+        return;
+    ser.write(b'U')
+    ser.flush()
+    sleep(0.5)
+    triggered = False
+    while True:
+        if ser.in_waiting > 0:
+            while ser.in_waiting > 0:
+                line = ser.readline().decode().rstrip()
+            main = line.split("[", 3)
+            print(main)
+
+            lhs = (main[len(main) - 1].split(" ", 3))
+            rhs = (main[len(main) - 1].split(" ", 3))
+            print('point2')
+            print(lhs)
+            print('point3')
+            if int(lhs[1]) == 0:
+                print('true!!')
+                return
+
+def lock_state():
+    if mode == 0:
+        return 1
+
+    line = ''
+    while True:
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').rstrip()
+            break
+        main = line.split("[", 2)
+        lhs = main[0].split(" ", 3)
+        return int(lhs[1])
+
+def get_weight():
+    if mode == 0 or weightmode == 0:
+        return 0.5
+    line = ''
+    while True:
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').rstrip()
+            break
+       
+        main = line.split("[", 1)       
  
-#             lhs = (main[len(main) - 1].split(" ", 3))
-#             rhs = (main[len(main) - 1].split(" ", 3))
-#             print('point2')
-#             print(lhs)
-#             print('point3')
-#             if int(lhs[1]) == 0:
-#                 print('true!!')
-#                 return
-                 
-        
-
-# def lock_state():
-#     line = ''
-#     while True:
-#         if ser.in_waiting > 0:
-#             line = ser.readline().decode('utf-8').rstrip()
-#             break
-
-#         main = line.split("[", 2)
-
-#         lhs = main[0].split(" ", 3)
-#         return int(lhs[1])
-
-# def get_weight():
-#     line = ''
-#     while True:
-#         if ser.in_waiting > 0:
-#             line = ser.readline().decode('utf-8').rstrip()
-#             break
-        
-#         main = line.split("[", 1)       
- 
-#         lhs = main.split(" ", 1)
-#         return float(lhs)
-
+        lhs = main.split(" ", 1)
+        return float(lhs)
 

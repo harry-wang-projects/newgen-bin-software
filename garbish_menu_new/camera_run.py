@@ -1,48 +1,75 @@
 import cv2
 import numpy as np
 import os
+import requests
+import json
+import pickle
+import base64
+
 from time import sleep
-from keras.models import load_model
 
 from classification_specs import IMG_SIZE, number_of_colors 
+
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
 
-# Load the model
-model = load_model("./converted_keras/keras_Model.h5", compile=False)
-
-# Load the labels
-class_names = open("./converted_keras/labels.txt", "r").readlines()
-
 camera = cv2.VideoCapture(0)
 
-def get_pic():
+def set_default(obj):
+    print('type of final:', type(obj))
+    if isinstance(obj, set):
+        return list(obj)
+    raise TypeError
 
-#    if number_of_colors == 1:
-#        img_array = cv2.imread(1, cv2.IMREAD_GRAYSCALE)  # read in the image, convert to grayscale
+def send_image(tosend):
+    print(type(tosend))
+    url = 'https://recycling.student.isf.edu.hk:81/nggetcamera'
+
+    tosend = ({'picturearray': base64.b64encode(tosend).decode('ascii')})
+    print(tosend)
+    x = requests.post(url, json = tosend, verify = False)
+    print("results")
+    print(x.content)
+    return 1
+
+def get_pic():
+    while not camera.isOpened():
+        sleep(0.01)
+#      if number_of_colors == 1:
+#          img_array = cv2.imread(1, cv2.IMREAD_GRAYSCALE)  # read in the image, convert to grayscale
 #    else:
 #        img_array = cv2.imread(1)
-    camera = cv2.VideoCapture(0)
     return_value, img_array = camera.read()
-    del(camera)
+    print(return_value)
+    print(img_array)
 
     new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE), interpolation = cv2.INTER_AREA)
 
+    cv2.imshow("asdf", new_array)
+    cv2.waitKey(3000)
+
     new_array = np.asarray(new_array, dtype=np.float32).reshape(1, 224, 224, 3)
+
 
     new_array = (new_array / 127.5) - 1
 
-    prediction = model.predict(new_array)
-    index = np.argmax(prediction)
-    class_name = class_names[index]
-    confidence_score = prediction[0][index]
+    print(new_array)
+    print(new_array.shape)
 
-    print("Class:", class_name[2:], end="")
-    print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+    pickle_data = pickle.dumps(new_array)
+    print('pickle type: ', type(pickle_data))
 
-    lenofit = len(class_name)
+    camresult = send_image(pickle_data)
 
-    return class_name[2:lenofit - 1]
+    return camresult
+    #print("Class:", class_name[2:], end="")
+    #print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+
+        #lenofit = len(class_name)
+
+        #return class_name[2:lenofit - 1]
+
+get_pic()
 
 def verify_classes(name):
     for i in range(10):

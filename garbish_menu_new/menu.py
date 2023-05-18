@@ -295,7 +295,7 @@ class pages():
             self.fail()
             return ["Fail",material.replace(" ",""),id_card]
         unlock()
-        #send_to_server(id_default, password_default, id_card, material_num, "asdf", 1)
+        send_to_server(id_default, password_default, id_card, material_num, "asdf", 2, 1)
         page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","Please stand by...",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":
