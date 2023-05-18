@@ -30,7 +30,10 @@ def send_image(tosend):
     x = requests.post(url, json = tosend, verify = False)
     print("results")
     print(x.content)
-    return 1
+
+    decoded_thing = json.loads(x.content)
+    
+    return decoded_thing["class"]
 
 def get_pic():
     while not camera.isOpened():
@@ -46,7 +49,7 @@ def get_pic():
     new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE), interpolation = cv2.INTER_AREA)
 
     cv2.imshow("asdf", new_array)
-    cv2.waitKey(3000)
+    cv2.waitKey(1000)
 
     new_array = np.asarray(new_array, dtype=np.float32).reshape(1, 224, 224, 3)
 
@@ -62,12 +65,30 @@ def get_pic():
     camresult = send_image(pickle_data)
 
     return camresult
-    #print("Class:", class_name[2:], end="")
-    #print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
 
-        #lenofit = len(class_name)
+def get_pic_array():
+    while not camera.isOpened():
+        sleep(0.01)
+#      if number_of_colors == 1:
+#          img_array = cv2.imread(1, cv2.IMREAD_GRAYSCALE)  # read in the image, convert to grayscale
+#    else:
+#        img_array = cv2.imread(1)
+    return_value, img_array = camera.read()
+    print(return_value)
+    print(img_array)
 
-        #return class_name[2:lenofit - 1]
+    new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE), interpolation = cv2.INTER_AREA)
+
+    cv2.imshow("asdf", new_array)
+    cv2.waitKey(1000)
+
+    new_array = np.asarray(new_array, dtype=np.float32).reshape(1, 224, 224, 3)
+
+
+    new_array = (new_array / 127.5) - 1
+
+
+    return pickle.dumps(new_array)
 
 get_pic()
 

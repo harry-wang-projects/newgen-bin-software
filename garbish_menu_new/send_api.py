@@ -22,4 +22,20 @@ def send_to_server(bin_id, bin_password, receiver, trash_type, image, weight, su
     else:
         return False
 
+def send_to_server_new(bin_id, bin_password, receiver, trash_type, weight, success):
+    img_array = get_pic_array()
+
+
+    url = 'https://recycling.student.isf.edu.hk:81/ngrecycle'
+    myobj = {'bin_id': bin_id, 'bin_password': bin_password, 'receiver_id': receiver, 'type': str(trash_type), "image": base64.b64encode(img_array).decode('ascii'), 'weight': str(weight), 'success': str(success)}
+    x = requests.post(url, json = myobj, verify=False)
+
+    print("results:")
+    print(x.content)
+
+    if x.text == '{"results" : "success"}':
+        return True
+    else:
+        return False
+
 #send_to_server(id_default, password_default, "0012113", 2, "sdfa", 12, 1)
