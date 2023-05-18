@@ -93,25 +93,25 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             if event == pygame.KEYDOWN:
                 key=pygame.key.get_pressed()
                 if key[pygame.K_0]:
-                    self.detect_id_card=self.detect_id_card+str(0)
+                    self.detect_id_card=str(self.detect_id_card)+str(0)
                 if key[pygame.K_1]:
-                    self.detect_id_card=self.detect_id_card+str(1)
+                    self.detect_id_card=str(self.detect_id_card)+str(1)
                 if key[pygame.K_2]:
-                    self.detect_id_card=self.detect_id_card+str(2)
+                    self.detect_id_card=str(self.detect_id_card)+str(2)
                 if key[pygame.K_3]:
-                    self.detect_id_card=self.detect_id_card+str(3)
+                    self.detect_id_card=str(self.detect_id_card)+str(3)
                 if key[pygame.K_4]:
-                    self.detect_id_card=self.detect_id_card+str(4)
+                    self.detect_id_card=str(self.detect_id_card)+str(4)
                 if key[pygame.K_5]:
-                    self.detect_id_card=self.detect_id_card+str(5)
+                    self.detect_id_card=str(self.detect_id_card)+str(5)
                 if key[pygame.K_6]:
-                    self.detect_id_card=self.detect_id_card+str(6)
+                    self.detect_id_card=str(self.detect_id_card)+str(6)
                 if key[pygame.K_7]:
-                    self.detect_id_card=self.detect_id_card+str(7)
+                    self.detect_id_card=str(self.detect_id_card)+str(7)
                 if key[pygame.K_8]:
-                    self.detect_id_card=self.detect_id_card+str(8)
+                    self.detect_id_card=str(self.detect_id_card)+str(8)
                 if key[pygame.K_9]:
-                    self.detect_id_card=self.detect_id_card+str(9)
+                    self.detect_id_card=str(self.detect_id_card)+str(9)
                 if key[pygame.K_RETURN]:
                     return self.detect_id_card
             if len(str(self.detect_id_card))==7:  
@@ -122,7 +122,6 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 except TypeError:
                     print("typeerror")
             return "unsuccess"
-
 
     def events(self):
         current_time = pygame.time.get_ticks()
@@ -144,8 +143,6 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 if mouse_pressed[0] == 1:
                     self.mouse_pos = pygame.mouse.get_pos()
             self.barcode(event.type)
-             #change to only current frame
-            
 
     def draw_text_button(self,text, myrect, font, font_color=(0,0,0), background_color=(255,255,255), use_inner=False):
         inner_area = pygame.Rect((-22, -8, myrect[2], myrect[3]))
