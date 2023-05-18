@@ -11,6 +11,7 @@ if mode == 1:
 
     ser.write(b'R')
 
+
 def unlock():
     if mode == 0:
         sleep(1)
@@ -61,5 +62,4 @@ def get_weight():
  
         lhs = main.split(" ", 1)
         return float(lhs)
-
 
