@@ -227,6 +227,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         while self.keep_looping:
             self.events()
             self.draw()
+            print(self.detect_id_card,"id")
             if self.touchquitcount==10:
                 pygame.quit()
                 sys.exit()
