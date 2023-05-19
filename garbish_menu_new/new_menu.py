@@ -9,7 +9,7 @@ from pygame._sdl2 import touch
 from screeninfo import get_monitors
 # from barcode_get import get_barcode
 from garbage_list import trash_list
-# from hardware_commands import get_weight, unlock
+from hardware_commands import get_weight, unlock, lock_state
 
 if len(sys.argv)!=2:
     print("invalid argument count.")
@@ -38,11 +38,12 @@ xsname = pygame.font.Font("Somatic-Rounded.otf",int(30*wm))
 sname = pygame.font.Font("Somatic-Rounded.otf",int(60*wm))
 mname = pygame.font.Font("Somatic-Rounded.otf",int(80*wm))
 msname = pygame.font.Font("Somatic-Rounded.otf",int(60*wm))
+cname=pygame.font.Font("Somatic-Rounded.otf",int(25*wm))
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 class Menu(): #creates a menu with 3 buttons and the title on the top.
-    def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,font_2=sname,font_render_2=mname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="JCSE Recycling",student_id=None,cycle=False,animation=None): #spinner_chance adds up to 1, its a list.
+    def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,font_2=sname,font_render_2=mname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="Recycle Royale Bin UI",student_id=None,cycle=False,animation=None): #spinner_chance adds up to 1, its a list.
         self.width = screen_width
         self.height = screen_height
         self.screen=screen
@@ -57,7 +58,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             self.font_render_2 = font_render_2
             self.font_2=font_2
             self.student_id_text=str(student_id)
-            self.student_id_rect = self.font_render_2.render(self.student_id_text, True, BLACK, None).get_rect(center=(1000*wm,650*hm)) #(620,400,120,50)
+            self.student_id_rect = self.font_render_2.render(self.student_id_text, True, BLACK, None).get_rect(center=(1000*wm,600*hm)) #(620,400,120,50)
         self.textboxrect = pygame.Rect(50*wm, 30*hm,self.width-(100)*wm, 250*hm)
         self.touchquitrect=pygame.Rect(10,10,100,300*hm)
         self.touchquitcount=0
@@ -87,6 +88,9 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         self.current_frame=0
         self.next_frame=True
         self.detect_id_card = ""
+        self.credit = "Made by Edwin Fang & Harry Wang"
+        self.credit_font = cname.render(self.credit, True, WHITE, None)
+        self.credit_rect = self.credit_font.get_rect(center=(self.width/2,self.height*0.925))
 
     def barcode(self,event):
         if self.student_id==None:
@@ -125,7 +129,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
 
     def events(self):
         current_time = pygame.time.get_ticks()
-        if (current_time-self.start_time)%50<=5:
+        if (current_time-self.start_time)%60<=10:
             self.next_frame=True
         if self.cycle and current_time-self.start_time>=self.cycle_time:
             self.keep_looping=False
@@ -214,6 +218,8 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 self.keep_looping = False
             if self.touchquitrect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
                 self.touchquitcount+=1
+        self.screen.blit(fairy, (15*hm, self.height*0.4))
+        self.screen.blit(self.credit_font, self.credit_rect)
         pygame.display.flip()
 
     def main(self):
@@ -251,7 +257,7 @@ class pages():
             for i in range(1,4):
                 print(i)
                 start = pygame.time.get_ticks()
-                barcode = Menu("Scanning",(850*wm,460*hm),"Place your id under the camera","Please Standby",text1color=(97,255,77),cycle=True,animation=i)
+                barcode = Menu("2800 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",text1color=(97,255,77),cycle=True,animation=i)
                 id_card = barcode.main()
                 end = pygame.time.get_ticks()
                 print("start-end",end-start)
@@ -261,36 +267,58 @@ class pages():
                     if not id_card==None:
                         return id_card
                 except TypeError and ValueError:
-                    print("typeerror")
+                    print("typeerror or valueerror")
                     pass
         
         
     def page(self):
         id_card = self.cycle()
-        uncotaminated = Menu(" Yes ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" No ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
+        uncotaminated = Menu(" No ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" Yes ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         uncotaminated = uncotaminated.main()
-        if uncotaminated != " Yes ": 
+        if uncotaminated != " No ": 
             self.fail()
-            return ["Fail",trash_type.replace(" ",""),id_card]
-        page4 = Menu(" Yes ",(650*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77),student_id=id_card)
-        uncotaminated = page4.main()
-        
-        page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","Please stand by...",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)
+            return ["Fail",trash_type,id_card]
+        page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77),student_id=id_card)
+        uncotaminated = page4.draw()
+        temp = verify_classes(trash_type)
+        if not temp:
+            self.fail()
+            return ["Fail",trash_type,id_card]
+        material_num = 0
+        if not temp:
+            for i in range(3):
+                if trash_type==trash_list[i + 1].name:
+                    material_num = i + 1
+                    break
+        weight_inrange = True
+        val = get_weight() * 10
+        print("type: ", type(val))
+        print("weight of the thing:", val)
+        print("minweight:", trash_list[material_num].min_weight)
+        print("maxweight:", trash_list[material_num].max_weight)
+        if val > trash_list[material_num].min_weight and val < trash_list[material_num].max_weight:
+            weight_inrange = True
+        else:
+            weight_inrange = False
+            self.too_heavy()
+            return ["Fail",trash_type,id_card]
+        unlock()
+        page5 = Menu("Bin Unlocked",(800*wm,460*hm),"Place trash on tray for identification","Trash is Acceptable",text1color=(97,255,77),student_id=id_card)
+        while not lock_state()==1:
+            unlocking = page5.draw()
+              
+        page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","You are rewarded with 5 R",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":
-            return ["Success",trash_type.replace(" ",""),id_card]
-        return ["Success",trash_type.replace(" ",""),id_card]
-        
-    def unknown_material(self,id_card):   
-        unknown = Menu(" Okay",(850*wm,460*hm),"Your trash can not be identified (Or not metal, plastic or paper)","Please try again!",text1color=(97,255,77),student_id=id_card)
-        unknown.main() 
-        
-    def incorrect_material(self,id_card):
-        incorrect = Menu(" Okay",(850*wm,460*hm),"You chose the wrong type!","Please be more careful.",text1color=(97,255,77),student_id=id_card)
-        incorrect.main() 
+            return ["Success",trash_type,val,id_card]
+        return ["Success",trash_type,val,id_card]
         
     def fail(self):
         fail = Menu(" Okay",(850*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
+        fail.main()
+        
+    def too_heavy(self):
+        fail = Menu(" Okay",(850*wm,460*hm),"Your trash is too heavy","Please try again!",text1color=(97,255,77))
         fail.main()
         
     def events(self):
@@ -302,23 +330,27 @@ class pages():
     def main(self):
         while True:
             temp = self.page()
-            with open('save.txt','r') as save:
-                lines = save.readlines()
-            numsuccess = int(lines[0].replace("Success:",""))
-            numfailure = int(lines[1].replace("Fail:",""))
-            if temp[0]=="Success":
-                numsuccess+=1
-            else:
-                numfailure+=1
-            lines[0]="Success:"+str(numsuccess)+"\n"
-            lines[1]="Fail:"+str(numfailure)+"\n"
-            with open('save.txt','w') as success:
-                success.writelines(lines)
-                if not len(temp)==1:
-                    success.write(temp[0]+" "+temp[1]+" "+temp[2]+" "+str(time.ctime())+"\n")
-                else:
-                    success.write(temp[0]+" "+str(time.ctime())+"\n")
+            #send to api thing here. Format = "Success, trash_type, val, id_card" or "Fail, trash_type, id_card"
+            
+            # with open('save.txt','r') as save:
+            #     lines = save.readlines()
+            # numsuccess = int(lines[0].replace("Success:",""))
+            # numfailure = int(lines[1].replace("Fail:",""))
+            # if temp[0]=="Success":
+            #     numsuccess+=1
+            # else:
+            #     numfailure+=1
+            # lines[0]="Success:"+str(numsuccess)+"\n"
+            # lines[1]="Fail:"+str(numfailure)+"\n"
+            # with open('save.txt','w') as success:
+            #     success.writelines(lines)
+            #     if not len(temp)==1:
+            #         success.write(temp[0]+" "+temp[1]+" "+temp[2]+" "+str(time.ctime())+"\n")
+            #     else:
+            #         success.write(temp[0]+" "+str(time.ctime())+"\n")
+            
                 
+fairy = pygame.transform.scale(pygame.image.load("recyclefairy.png"),(500*wm,500*wm))
 touch_available=False
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (screen_width,screen_height))
 river1 = []
