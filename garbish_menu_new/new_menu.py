@@ -308,7 +308,7 @@ class pages():
         unlocking = page5.draw()
         unlock()
               
-        page6 = Menu(" Exit ",(800*wm,460*hm),"Your trash is being consumed","You are rewarded with 5 R",text1color=(97,255,77),student_id=id_card)
+        page6 = Menu(" Exit ",(800*wm,460*hm),"Your trash is being consumed","Your Reward: 5R",text1color=(97,255,77),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":
             return ["Success",trash_type,val,id_card]
