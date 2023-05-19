@@ -9,7 +9,7 @@ from pygame._sdl2 import touch
 from screeninfo import get_monitors
 # from barcode_get import get_barcode
 from garbage_list import trash_list
-from hardware_commands import get_weight, unlock, lock_state
+from hardware_commands import get_weight, unlock
 
 if len(sys.argv)!=2:
     print("invalid argument count.")
@@ -30,6 +30,7 @@ pygame.init()
 hm = screen_height/720
 wm = screen_width/1200 #height and width multiplier
 print(wm," ",hm)
+xxlname = pygame.font.Font("Somatic-Rounded.otf",int(150*wm))
 xlname = pygame.font.Font("Somatic-Rounded.otf",int(135*wm))
 lname = pygame.font.Font("Somatic-Rounded.otf",int(115*wm))
 name = pygame.font.Font("Somatic-Rounded.otf",int(110*wm))
@@ -161,10 +162,10 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         if self.cycle:
             if self.animation==1:
                 self.screen.blit(river1[self.current_frame],(0,0))
-            if self.animation==2:
-                self.screen.blit(river2[self.current_frame],(0,0))
-            if self.animation==3:
-                self.screen.blit(forest[self.current_frame],(0,0))
+            # if self.animation==2:
+            #     self.screen.blit(river2[self.current_frame],(0,0))
+            # if self.animation==3:
+            #     self.screen.blit(forest[self.current_frame],(0,0))
         
     
     def draw(self):
@@ -257,7 +258,7 @@ class pages():
             for i in range(1,4):
                 print(i)
                 start = pygame.time.get_ticks()
-                barcode = Menu("2800 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",text1color=(97,255,77),cycle=True,animation=i)
+                barcode = Menu("2800 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77),cycle=True,animation=1)
                 id_card = barcode.main()
                 end = pygame.time.get_ticks()
                 print("start-end",end-start)
@@ -281,15 +282,15 @@ class pages():
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77),student_id=id_card)
         uncotaminated = page4.draw()
         temp = verify_classes(trash_type)
+        temp=True
         if not temp:
             self.fail()
             return ["Fail",trash_type,id_card]
         material_num = 0
-        if not temp:
-            for i in range(3):
-                if trash_type==trash_list[i + 1].name:
-                    material_num = i + 1
-                    break
+        for i in range(3):
+            if trash_type==trash_list[i + 1].name:
+                material_num = i + 1
+                break
         weight_inrange = True
         val = get_weight() * 10
         print("type: ", type(val))
@@ -302,23 +303,22 @@ class pages():
             weight_inrange = False
             self.too_heavy()
             return ["Fail",trash_type,id_card]
+        page5 = Menu(" Bin Unlocked",(800*wm,460*hm),"Place trash on tray for identification","Trash is Acceptable",text1color=(97,255,77),student_id=id_card)
+        unlocking = page5.draw()
         unlock()
-        page5 = Menu("Bin Unlocked",(800*wm,460*hm),"Place trash on tray for identification","Trash is Acceptable",text1color=(97,255,77),student_id=id_card)
-        while not lock_state()==1:
-            unlocking = page5.draw()
               
-        page6 = Menu("Exit ",(650*wm,460*hm),"Your trash is being consumed","You are rewarded with 5 R",text1color=(97,255,77),text2="Spin",text2center=(1000*wm, 460*hm),text2color=(246, 142, 51),student_id=id_card)
+        page6 = Menu(" Exit ",(800*wm,460*hm),"Your trash is being consumed","You are rewarded with 5 R",text1color=(97,255,77),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":
             return ["Success",trash_type,val,id_card]
         return ["Success",trash_type,val,id_card]
         
     def fail(self):
-        fail = Menu(" Okay",(850*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
+        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
         fail.main()
         
     def too_heavy(self):
-        fail = Menu(" Okay",(850*wm,460*hm),"Your trash is too heavy","Please try again!",text1color=(97,255,77))
+        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is too heavy","Please try again!",text1color=(97,255,77))
         fail.main()
         
     def events(self):
@@ -361,17 +361,17 @@ for count in range(len(os.listdir("river1"))):
     max_frame=count
 max_frames.append(max_frame)
     
-river2 = []
-for count in range(len(os.listdir("river2"))):
-    river2.append(pygame.transform.scale(pygame.image.load(f"river2/{count+1}.jpeg"),(screen_width,screen_height)))
-    max_frame=count
-max_frames.append(max_frame)
+# river2 = []
+# for count in range(len(os.listdir("river2"))):
+#     river2.append(pygame.transform.scale(pygame.image.load(f"river2/{count+1}.jpeg"),(screen_width,screen_height)))
+#     max_frame=count
+# max_frames.append(max_frame)
 
-forest = []
-for count in range(len(os.listdir("forest"))):
-    forest.append(pygame.transform.scale(pygame.image.load(f"forest/{count+1}.jpeg"),(screen_width,screen_height)))
-    max_frame=count
-max_frames.append(max_frame)
+# forest = []
+# for count in range(len(os.listdir("forest"))):
+#     forest.append(pygame.transform.scale(pygame.image.load(f"forest/{count+1}.jpeg"),(screen_width,screen_height)))
+#     max_frame=count
+# max_frames.append(max_frame)
 
 print(max_frames)
 screen = pygame.display.set_mode((screen_width, screen_height),flags=pygame.FULLSCREEN)
