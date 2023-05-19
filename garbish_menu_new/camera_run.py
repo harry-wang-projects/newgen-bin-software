@@ -74,8 +74,8 @@ def get_pic_array():
 #    else:
 #        img_array = cv2.imread(1)
     return_value, img_array = camera.read()
-    print(return_value)
-    print(img_array)
+    #print(return_value)
+    #print(img_array)
 
     new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE), interpolation = cv2.INTER_AREA)
 
@@ -90,15 +90,13 @@ def get_pic_array():
 
     return pickle.dumps(new_array)
 
-get_pic()
-
 def verify_classes(name):
-    for i in range(10):
+    for i in range(5):
         obtained_str = get_pic()
         print("got str: [" +  obtained_str + "], trash: [Trash]")
         if obtained_str == name:
             return True
-        sleep(0.2)
+        sleep(0.4)
     return False
 
-print(verify_classes('Trash'))
+print(verify_classes('Plastic'))

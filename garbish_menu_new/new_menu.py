@@ -4,7 +4,7 @@ from os import path
 import os 
 import time
 from random import random
-from camera_run_temp import get_pic, verify_classes#, get_barcode
+from camera_run import get_pic, verify_classes#, get_barcode
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
 # from barcode_get import get_barcode
