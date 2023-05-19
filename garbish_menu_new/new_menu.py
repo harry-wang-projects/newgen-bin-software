@@ -274,6 +274,7 @@ class pages():
         
     def page(self):
         # id_card = self.cycle()
+        id_card="0012029"
         uncotaminated = Menu(" No ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" Yes ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         uncotaminated = uncotaminated.main()
         if uncotaminated != " No ": 
