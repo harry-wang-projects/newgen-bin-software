@@ -130,7 +130,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
 
     def events(self):
         current_time = pygame.time.get_ticks()
-        if (current_time-self.start_time)%50<=35:
+        if (current_time-self.start_time)%75<=50:
             self.next_frame=True
         if self.cycle and current_time-self.start_time>=self.cycle_time:
             self.keep_looping=False
