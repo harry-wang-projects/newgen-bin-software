@@ -258,7 +258,7 @@ class pages():
             for i in range(1,4):
                 print(i)
                 start = pygame.time.get_ticks()
-                barcode = Menu("2800 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77),cycle=True,animation=1)
+                barcode = Menu("6.9 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77),cycle=True,animation=1)
                 id_card = barcode.main()
                 end = pygame.time.get_ticks()
                 print("start-end",end-start)
@@ -273,7 +273,7 @@ class pages():
         
         
     def page(self):
-        id_card = self.cycle()
+        # id_card = self.cycle()
         uncotaminated = Menu(" No ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" Yes ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         uncotaminated = uncotaminated.main()
         if uncotaminated != " No ": 
