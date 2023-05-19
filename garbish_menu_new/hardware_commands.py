@@ -2,7 +2,7 @@ from time import sleep
 
 #set mode = 0 to disable reading serial
 mode = 1
-weightmode = 0
+weightmode = 1
 
 if mode == 1:
     import serial
@@ -56,10 +56,16 @@ def get_weight():
     while True:
         if ser.in_waiting > 0:
             line = ser.readline().decode('utf-8').rstrip()
-            break
-       
-        main = line.split("[", 1)       
- 
-        lhs = main.split(" ", 1)
-        return float(lhs)
+            if len(line) < 7:
+                continue
+            print("line: ", line, ";")       
+            main = line.split("[", 1)       
+            print("newline:", line) 
+            lhs = main[len(main) - 1].split(" ", 2)
+            print("lhs:", lhs)
+            return float(lhs[0])
+        else:
+            continue
 
+
+print(get_weight())
