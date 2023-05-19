@@ -28,7 +28,7 @@ def prepare(file_path):
 
     img_array = np.asarray(img_array, dtype=np.float32).reshape(1, 224, 224, 3)
 
-    img_arraay = (img_array / 127.5) - 1
+    img_array = (img_array / 127.5) - 1
 
     return img_array  # return the image with shaping that TF wants.
 
@@ -36,15 +36,30 @@ def prepare(file_path):
 
 def predict(filepath):
     print(filepath)
-    prediction = model.predict([prepare(filepath)])
-    for i in range(4):
-        prediction[0][i] = round(prediction[0][i] * 100)
+    prediction = model.predict(prepare(filepath))
 
     print(prediction)
-    for i in range(4):
-        if(round(prediction[0][i] / 100) == 1):
-            print(CATEGORIES[i])
+    index = np.argmax(prediction)
+    class_name = class_names[index]
+    confidence_score = prediction[0][index]
 
+    # Print prediction and confidence score
+    print("Class:", class_name[2:], end="")
+    print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+    return class_name[2:], str(np.round(confidence_score * 100))[:-2]
+
+def predict_array(array):
+    prediction = model.predict(array)
+
+    print(prediction)
+    index = np.argmax(prediction)
+    class_name = class_names[index]
+    confidence_score = prediction[0][index]
+
+    # Print prediction and confidence score
+    print("Class:", class_name[2:], end="")
+    print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
+    return class_name[2:], str(np.round(confidence_score * 100))[:-2]
 
 for filename in os.listdir(DATADIR):
     with open(os.path.join(DATADIR, filename), 'r') as f:
