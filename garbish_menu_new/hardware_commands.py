@@ -1,11 +1,11 @@
-import serial
 from time import sleep
 
 #set mode = 0 to disable reading serial
-mode = 1
+mode = 0
 weightmode = 0
 
 if mode == 1:
+    import serial
     ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
     ser.flush()
 
