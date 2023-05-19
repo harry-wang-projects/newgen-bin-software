@@ -1,7 +1,7 @@
 from time import sleep
 
 #set mode = 0 to disable reading serial
-mode = 0
+mode = 1
 weightmode = 0
 
 if mode == 1:

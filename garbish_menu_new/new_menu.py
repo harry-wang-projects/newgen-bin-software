@@ -130,7 +130,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
 
     def events(self):
         current_time = pygame.time.get_ticks()
-        if (current_time-self.start_time)%60<=10:
+        if (current_time-self.start_time)%100<=75:
             self.next_frame=True
         if self.cycle and current_time-self.start_time>=self.cycle_time:
             self.keep_looping=False
@@ -258,7 +258,7 @@ class pages():
             for i in range(1,4):
                 print(i)
                 start = pygame.time.get_ticks()
-                barcode = Menu("2800 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77),cycle=True,animation=1)
+                barcode = Menu("6.9 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77),cycle=True,animation=1)
                 id_card = barcode.main()
                 end = pygame.time.get_ticks()
                 print("start-end",end-start)
@@ -273,7 +273,8 @@ class pages():
         
         
     def page(self):
-        id_card = self.cycle()
+        # id_card = self.cycle()
+        id_card="0012029"
         uncotaminated = Menu(" No ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" Yes ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         uncotaminated = uncotaminated.main()
         if uncotaminated != " No ": 
@@ -307,7 +308,7 @@ class pages():
         unlocking = page5.draw()
         unlock()
               
-        page6 = Menu(" Exit ",(800*wm,460*hm),"Your trash is being consumed","You are rewarded with 5 R",text1color=(97,255,77),student_id=id_card)
+        page6 = Menu(" Exit ",(800*wm,460*hm),"Your trash is being consumed","Your Reward: 5R",text1color=(97,255,77),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":
             return ["Success",trash_type,val,id_card]
