@@ -1,15 +1,14 @@
 from time import sleep
+import serial
 
 #set mode = 0 to disable reading serial
-mode = 0
+mode = 1
 weightmode = 0
 
-if mode == 1:
-    import serial
-    ser = serial.Serial('/dev/ttyUSB0', 9600, timeout=1)
-    ser.flush()
+ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=5)
+ser.flush()
 
-    ser.write(b'R')
+ser.write(b'R')
 
 
 def unlock():
@@ -22,19 +21,10 @@ def unlock():
     triggered = False
     while True:
         if ser.in_waiting > 0:
-            while ser.in_waiting > 0:
-                line = ser.readline().decode().rstrip()
-            main = line.split("[", 3)
-            print(main)
-
-            lhs = (main[len(main) - 1].split(" ", 3))
-            rhs = (main[len(main) - 1].split(" ", 3))
-            print('point2')
-            print(lhs)
-            print('point3')
-            if int(lhs[1]) == 0:
-                print('true!!')
-                return
+            line = ser.readline().decode('utf-8').rstrip()
+            for i in range(len(line)):
+                if line[i] == 'C':
+                    return
 
 def lock_state():
     if mode == 0:
@@ -53,19 +43,36 @@ def get_weight():
     if mode == 0 or weightmode == 0:
         return 0.5
     line = ''
+    ser.write(b'W')
+    ser.flush()
     while True:
         if ser.in_waiting > 0:
+            print("hi")
             line = ser.readline().decode('utf-8').rstrip()
-            if len(line) < 7:
+            if len(line) < 2:
                 continue
             print("line: ", line, ";")       
             main = line.split("[", 1)       
             print("newline:", line) 
-            lhs = main[len(main) - 1].split(" ", 2)
+            lhs = main[len(main) - 1].split("]", 2)
             print("lhs:", lhs)
-            return float(lhs[0])
+            return int(lhs[0])
         else:
             continue
 
+def get_button():
+    if mode == 0:
+        return 0
+    ser.write(b'B')
+    ser.flush()
+    while True:
+        if ser.in_waiting > 0:
+            line = ser.readline().decode('utf-8').rstrip() 
+            main = line.split("[", 1)
+            lhs = main[len(main) - 1].split("]", 1)
+            return int(lhs[0])
 
-print(get_weight())
+for i in range(50):
+    print(get_weight())
+unlock()
+get_button()
