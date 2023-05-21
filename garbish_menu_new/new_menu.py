@@ -40,6 +40,7 @@ sname = pygame.font.Font("Somatic-Rounded.otf",int(60*wm))
 mname = pygame.font.Font("Somatic-Rounded.otf",int(80*wm))
 msname = pygame.font.Font("Somatic-Rounded.otf",int(60*wm))
 cname=pygame.font.Font("Somatic-Rounded.otf",int(25*wm))
+underline = pygame.font.SysFont("arial",int(80*wm))
 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
@@ -77,21 +78,55 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             self.text3_rect = self.font_render.render(self.text3_text, True, BLACK, None).get_rect(center=(text3center))
         self.cycle=cycle 
         self.start_time = pygame.time.get_ticks()
-        if self.cycle:
-            self.cycle_time=10000 #msec
-            self.animation=animation
-            self.max_frame=max_frames[animation-1]
+        # if self.cycle:
+        #     self.cycle_time=10000 #msec
+        #     self.animation=animation
+        #     self.max_frame=max_frames[animation-1]
         self.mouse_pos = None
         self.keep_looping = True
         self.message = ""
         self.button = 0
         self.button_cooldown = 3
-        self.current_frame=0
-        self.next_frame=True
-        self.detect_id_card = ""
+        # self.current_frame=0
+        # self.next_frame=True
+        self.detect_id_card = "" #barcode
+        self.key_id_card = "" #keyboard
         self.credit = "Made by Edwin Fang & Harry Wang"
         self.credit_font = cname.render(self.credit, True, WHITE, None)
         self.credit_rect = self.credit_font.get_rect(center=(self.width/2,self.height*0.925))
+        if self.student_id==None:
+            self.key_board_large_rect = pygame.rect.Rect(self.width*0.075,self.height*0.4,(self.width/10)*3,(self.height*0.12)) 
+            self.key_board_rect = []
+            self.key_board_font = []
+            self.key_board_font_rect = []
+            self.key_board_result = ""
+            self.key_board_underline = "_______"
+            self.key_board_underline_rect = pygame.rect.Rect(self.width*0.083,self.height*0.4,self.width*0.08,self.height*0.08)
+            self.key_board_underline_font = underline.render(self.key_board_underline,True,BLACK,None)
+            self.key_del = pygame.rect.Rect(self.width*0.075+(self.width/10)*3,self.height*0.65,self.width*0.08,self.height*0.08)
+            self.key_del_font = mname.render("Del  ",True,BLACK,(230,230,230))
+            self.key_enter = pygame.rect.Rect(self.width*0.075+(self.width/10)*3,self.height*0.775,self.width*0.08,self.height*0.08)
+            self.key_enter_font = mname.render("Enter",True,BLACK,(230,230,230))
+            # self.key_enter = self.key_enter_font.get_rect(center=(self.width*0.075+(self.width/10)*3+self.width*0.04,self.height*0.775+self.height*0.04))
+            self.enter=False
+            actual = 1
+            for i in range(3):
+                temp = []
+                temp1 = []
+                temp2 = []
+                for y in range(3):
+                    item = pygame.rect.Rect(self.width*0.075+(self.width/10)*y,self.height*0.7+(self.height*0.12)*i,self.width*0.08,self.height*0.08) #not needed i think
+                    item1 = mname.render(" "+str(actual)+" ",True,BLACK, None)
+                    if actual==1:
+                        item1 = mname.render(" "+str(actual)+"  ",True,BLACK, None)
+                    item2 = item1.get_rect(center=(self.width*0.075+(self.width/10)*y+self.width*0.04,self.height*0.55+(self.height*0.125)*i+self.height*0.04))
+                    actual+=1
+                    temp.append(item)
+                    temp1.append(item1)
+                    temp2.append(item2)
+                self.key_board_rect.append(temp)
+                self.key_board_font.append(temp1)
+                self.key_board_font_rect.append(temp2)
 
     def barcode(self,event):
         if self.student_id==None:
@@ -130,10 +165,10 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
 
     def events(self):
         current_time = pygame.time.get_ticks()
-        if (current_time-self.start_time)%100<=75:
-            self.next_frame=True
-        if self.cycle and current_time-self.start_time>=self.cycle_time:
-            self.keep_looping=False
+        # if (current_time-self.start_time)%100<=75:
+        #     self.next_frame=True
+        # if self.cycle and current_time-self.start_time>=self.cycle_time:
+        #     self.keep_looping=False
         if touch_available:
             self.finger_data = touch.get_finger(0)
         for event in pygame.event.get():
@@ -158,10 +193,10 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         else:
             self.screen.blit(txt_surface, myrect)
     
-    def animation_detect(self):
-        if self.cycle:
-            if self.animation==1:
-                self.screen.blit(river1[self.current_frame],(0,0))
+    # def animation_detect(self):
+        # if self.cycle:
+        #     if self.animation==1:
+        #         self.screen.blit(river1[self.current_frame],(0,0))
             # if self.animation==2:
             #     self.screen.blit(river2[self.current_frame],(0,0))
             # if self.animation==3:
@@ -170,14 +205,14 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
     
     def draw(self):
         self.screen.blit(background, (0, 0))
-        self.animation_detect()
-        if self.cycle:
-            if self.next_frame:
-                if not self.current_frame>=self.max_frame:
-                    self.current_frame+=1
-                else:
-                    self.current_frame=0
-                self.next_frame=False
+        # self.animation_detect()
+        # if self.cycle:
+        #     if self.next_frame:
+        #         if not self.current_frame>=self.max_frame:
+        #             self.current_frame+=1
+        #         else:
+        #             self.current_frame=0
+        #         self.next_frame=False
         pygame.draw.rect(self.screen, (214,240,232), self.textboxrect, border_radius=30)
         text = msname.render(self.st, True, BLACK, None)
         textRect = text.get_rect(center=(self.width/2,self.height/2))
@@ -194,8 +229,38 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             self.draw_text_button(self.text2_text, self.text2_rect, self.font, use_inner=True,background_color=self.text2_color)
         if self.text3_text!=None:
             self.draw_text_button(self.text3_text, self.text3_rect, self.font, use_inner=True,background_color=self.text3_color)
+        
+        if self.student_id==None:
+            pygame.draw.rect(self.screen, (240,240,240), self.key_board_large_rect, border_radius=10)
+            for i in range(3):
+                for x in range(3):
+                    pygame.draw.rect(self.screen, (230,230,230), self.key_board_font_rect[i][x], border_radius=10)
+                    self.screen.blit(self.key_board_font[i][x],self.key_board_font_rect[i][x])
+            self.screen.blit(self.key_board_underline_font,self.key_board_underline_rect)
+            temp = mname.render(self.key_id_card,True,BLACK,None)
+            self.screen.blit(temp,self.key_board_underline_rect)
+            pygame.draw.rect(self.screen, (214,240,232), self.key_enter, border_radius=10)
+            self.screen.blit(self.key_enter_font,self.key_enter)
+            pygame.draw.rect(self.screen, (214,240,232), self.key_del, border_radius=20)
+            self.screen.blit(self.key_del_font,self.key_del)
+        else:
+            self.screen.blit(fairy, (15*hm, self.height*0.4))
             
         if not self.mouse_pos == None:
+            if self.student_id==None:
+                actual=1
+                for i in range(3):
+                    for x in range(3):
+                        if self.key_board_font_rect[i][x].collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
+                            if not len(self.key_id_card)>=7:
+                                self.key_id_card=str(self.key_id_card)+str(actual)
+                        actual=actual+1
+                if self.key_enter.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
+                    self.enter = True
+                if self.key_del.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
+                    if len(self.key_id_card)>=1:
+                        temp1 = len(self.key_id_card) #index
+                        self.key_id_card = self.key_id_card[:temp1-1]
             if self.touchquitrect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.touchquitcount+=1
             if self.text1_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
@@ -208,6 +273,20 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             if len(self.message) > 0 and self.message!="Scanning":
                 self.keep_looping = False
         if touch_available and self.screen_touch:
+            if self.student_id==None:
+                actual=1
+                for i in range(3):
+                    for x in range(3):
+                        if self.key_board_font_rect[i][x].collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
+                            if not len(self.key_id_card)>=7:
+                                self.key_id_card=str(self.key_id_card)+str(actual)
+                        actual=actual+1
+                if self.key_enter.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
+                    self.enter = True
+                if self.key_del.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
+                    if len(self.key_id_card)>=1:
+                        temp1 = len(self.key_id_card) #index
+                        self.key_id_card = self.key_id_card[:temp1-1]
             if self.text1_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
                 self.message = self.text1_text
             if not self.text2_text==None and self.text2_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
@@ -219,15 +298,15 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 self.keep_looping = False
             if self.touchquitrect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
                 self.touchquitcount+=1
-        self.screen.blit(fairy, (15*hm, self.height*0.4))
         self.screen.blit(self.credit_font, self.credit_rect)
+            
         pygame.display.flip()
 
     def main(self):
         while self.keep_looping:
             self.events()
             self.draw()
-            print(self.detect_id_card,"id")
+            print(self.key_id_card,"id")
             if self.touchquitcount==10:
                 pygame.quit()
                 sys.exit()
@@ -235,6 +314,11 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 if len(str(self.detect_id_card))==7:
                     self.keep_looping=False
                     return self.detect_id_card
+                if self.enter:
+                    if len(str(self.key_id_card))==7:
+                        self.keep_looping=False
+                        return self.key_id_card
+                    self.enter=False
         print(self.message,"Success")
         return self.message
 
@@ -356,12 +440,12 @@ fairy = pygame.transform.scale(pygame.image.load("recyclefairy.png"),(500*wm,500
 touch_available=False
 background = pygame.transform.scale(pygame.image.load("background.jpg"), (screen_width,screen_height))
 river1 = []
-max_frames=[]
-max_frame=0
-for count in range(len(os.listdir("river1"))):
-    river1.append(pygame.transform.scale(pygame.image.load(f"river1/{count+1}.jpeg"),(screen_width,screen_height)))
-    max_frame=count
-max_frames.append(max_frame)
+# max_frames=[]
+# max_frame=0
+# for count in range(len(os.listdir("river1"))):
+#     river1.append(pygame.transform.scale(pygame.image.load(f"river1/{count+1}.jpeg"),(screen_width,screen_height)))
+#     max_frame=count
+# max_frames.append(max_frame)
     
 # river2 = []
 # for count in range(len(os.listdir("river2"))):
@@ -375,7 +459,7 @@ max_frames.append(max_frame)
 #     max_frame=count
 # max_frames.append(max_frame)
 
-print(max_frames)
+# print(max_frames)
 screen = pygame.display.set_mode((screen_width, screen_height),flags=pygame.FULLSCREEN)
 # screen = pygame.display.set_mode((screen_width, screen_height))
 page = pages()

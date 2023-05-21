@@ -99,4 +99,4 @@ def verify_classes(name):
         sleep(0.4)
     return False
 
-print(verify_classes('Plastic'))
+# print(verify_classes('Plastic'))
