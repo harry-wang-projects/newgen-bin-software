@@ -41,7 +41,7 @@ def lock_state():
 
 def get_weight():
     if mode == 0 or weightmode == 0:
-        return 0.5
+        return 5
     line = ''
     ser.write(b'W')
     ser.flush()
@@ -73,3 +73,4 @@ def get_button():
             return int(lhs[0])
 
 print(get_weight())
+
