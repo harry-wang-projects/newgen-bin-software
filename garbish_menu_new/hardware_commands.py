@@ -72,7 +72,4 @@ def get_button():
             lhs = main[len(main) - 1].split("]", 1)
             return int(lhs[0])
 
-for i in range(50):
-    print(get_weight())
-unlock()
-get_button()
+print(get_weight())
