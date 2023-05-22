@@ -104,12 +104,12 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             self.key_board_underline = "_______"
             self.key_board_underline_rect = pygame.rect.Rect(self.width*0.083,self.height*0.4,self.width*0.08,self.height*0.08)
             self.key_board_underline_font = underline.render(self.key_board_underline,True,BLACK,None)
-            self.key_del = pygame.rect.Rect(self.width*0.04,self.height*0.65,self.width*0.08,self.height*0.08)
-            self.key_del_font = mname.render("Del  ",True,BLACK,(230,230,230))
-            self.key_enter = pygame.rect.Rect(self.width*0.04,self.height*0.78,self.width*0.08,self.height*0.08)
-            self.key_enter_font = mname.render("Enter",True,BLACK,(230,230,230))
-            self.key_zero = pygame.rect.Rect(self.width*0.1,self.height*0.55,self.width*0.08,self.height*0.08)
+            self.key_zero = pygame.rect.Rect(self.width*0.075+(self.width/10)*3,self.height*0.525,self.width*0.08,self.height*0.08)
             self.key_zero_font = mname.render(" 0 ",True,BLACK,(230,230,230))
+            self.key_del = pygame.rect.Rect(self.width*0.075+(self.width/10)*3,self.height*0.65,self.width*0.08,self.height*0.08)
+            self.key_del_font = mname.render("Del  ",True,BLACK,(230,230,230))
+            self.key_enter = pygame.rect.Rect(self.width*0.075+(self.width/10)*3,self.height*0.775,self.width*0.08,self.height*0.08)
+            self.key_enter_font = mname.render("Enter",True,BLACK,(230,230,230))
             # self.key_enter = self.key_enter_font.get_rect(center=(self.width*0.075+(self.width/10)*3+self.width*0.04,self.height*0.775+self.height*0.04))
             self.enter=False
             actual = 1
@@ -122,7 +122,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                     item1 = mname.render(" "+str(actual)+" ",True,BLACK, None)
                     if actual==1:
                         item1 = mname.render(" "+str(actual)+"  ",True,BLACK, None)
-                    item2 = item1.get_rect(center=(self.width*0.2+(self.width/10)*y+self.width*0.04,self.height*0.55+(self.height*0.125)*i+self.height*0.04))
+                    item2 = item1.get_rect(center=(self.width*0.075+(self.width/10)*y+self.width*0.04,self.height*0.55+(self.height*0.125)*i+self.height*0.04))
                     actual+=1
                     temp.append(item)
                     temp1.append(item1)
@@ -242,11 +242,12 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             self.screen.blit(self.key_board_underline_font,self.key_board_underline_rect)
             temp = mname.render(self.key_id_card,True,BLACK,None)
             self.screen.blit(temp,self.key_board_underline_rect)
-            # pygame.draw.rect(self.screen, (214,240,232), self.key_enter, border_radius=10)
+            pygame.draw.rect(self.screen, (214,240,232), self.key_enter, border_radius=10)
             self.screen.blit(self.key_enter_font,self.key_enter)
-            # pygame.draw.rect(self.screen, (214,240,232), self.key_del, border_radius=20)
+            pygame.draw.rect(self.screen, (214,240,232), self.key_del, border_radius=20)
             self.screen.blit(self.key_del_font,self.key_del)
-            # pygame.draw.rect(self.screen, (214,240,232), self.key_zero, border_radius=20)
+
+            pygame.draw.rect(self.screen, (214,240,232), self.key_zero, border_radius=20)
             self.screen.blit(self.key_zero_font,self.key_zero)
         else:
             self.screen.blit(fairy, (15*hm, self.height*0.4))
@@ -266,6 +267,9 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                     if len(self.key_id_card)>=1:
                         temp1 = len(self.key_id_card) #index
                         self.key_id_card = self.key_id_card[:temp1-1]
+                if self.key_zero.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
+                    if not len(self.key_id_card)>=7:
+                        self.key_id_card=str(self.key_id_card)+'0'
             if self.touchquitrect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.touchquitcount+=1
             if self.text1_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
@@ -292,6 +296,10 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                     if len(self.key_id_card)>=1:
                         temp1 = len(self.key_id_card) #index
                         self.key_id_card = self.key_id_card[:temp1-1]
+
+                if self.key_zero.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
+                    if not len(self.key_id_card)>=7:
+                        self.key_id_card=str(self.key_id_card) + '0'
             if self.text1_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
                 self.message = self.text1_text
             if not self.text2_text==None and self.text2_rect.collidepoint(self.finger_data['x'],self.finger_data['y'])==1:
@@ -375,7 +383,7 @@ class pages():
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77),student_id=id_card)
         uncotaminated = page4.draw()
         temp, got_img = verify_classes(trash_type, True)
-        temp=True
+        #temp=True
         if not temp:
             self.fail()
             return ["Fail",trash_type,id_card]
