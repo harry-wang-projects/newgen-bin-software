@@ -10,6 +10,7 @@ from screeninfo import get_monitors
 # from barcode_get import get_barcode
 from garbage_list import trash_list
 from hardware_commands import get_weight, unlock
+from send_api import send_to_server, id_default, password_default
 
 if len(sys.argv)!=2:
     print("invalid argument count.")
@@ -158,7 +159,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                     return self.detect_id_card
             if len(str(self.detect_id_card))==7:  
                 try:
-                    self.detect_id_card = int(self.detect_id_card)
+                    #self.detect_id_card = int(self.detect_id_card)
                     if not self.detect_id_card==None:
                         return self.detect_id_card
                 except TypeError:
@@ -348,12 +349,14 @@ class pages():
                 print(i)
                 start = pygame.time.get_ticks()
                 barcode = Menu("6.9 KG",(850*wm,460*hm),"Place your id under the scanner","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77),cycle=True,animation=1)
+                #id_card = '0012113'
                 id_card = barcode.main()
+
                 end = pygame.time.get_ticks()
                 print("start-end",end-start)
                 print(id_card, "id card")
                 try:
-                    id_card = int(id_card)
+                    #id_card = int(id_card)
                     if not id_card==None:
                         return id_card
                 except TypeError and ValueError:
@@ -371,7 +374,7 @@ class pages():
             return ["Fail",trash_type,id_card]
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77),student_id=id_card)
         uncotaminated = page4.draw()
-        temp = verify_classes(trash_type)
+        temp, got_img = verify_classes(trash_type, True)
         temp=True
         if not temp:
             self.fail()
@@ -382,7 +385,7 @@ class pages():
                 material_num = i + 1
                 break
         weight_inrange = True
-        val = get_weight() * 10
+        val = get_weight()
         print("type: ", type(val))
         print("weight of the thing:", val)
         print("minweight:", trash_list[material_num].min_weight)
@@ -396,7 +399,8 @@ class pages():
         page5 = Menu(" Bin Unlocked",(800*wm,460*hm),"Place trash on tray for identification","Trash is Acceptable",text1color=(97,255,77),student_id=id_card)
         unlocking = page5.draw()
         unlock()
-              
+        send_to_server(id_default, password_default, id_card, 1, got_img, val, 1) 
+
         page6 = Menu(" Exit ",(800*wm,460*hm),"Your trash is being consumed","Your Reward: 5R",text1color=(97,255,77),student_id=id_card)
         finish = page6.main()
         if finish=="Exit ":

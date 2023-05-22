@@ -9,6 +9,7 @@ import base64
 from time import sleep
 
 from classification_specs import IMG_SIZE, number_of_colors 
+from hardware_commands import get_button
 
 # Disable scientific notation for clarity
 np.set_printoptions(suppress=True)
@@ -64,7 +65,7 @@ def get_pic():
 
     camresult = send_image(pickle_data)
 
-    return camresult
+    return camresult, new_array
 
 def get_pic_array():
     while not camera.isOpened():
@@ -90,13 +91,23 @@ def get_pic_array():
 
     return pickle.dumps(new_array)
 
-def verify_classes(name):
+def verify_classes(name, manual):
+    img = np.empty((1, 224, 224 ,3))
+    if manual:
+        value = get_button()
+        print("value:", value)
+        if value == 0:
+            return False, img
+        else:
+            return True, img
+
+
     for i in range(5):
-        obtained_str = get_pic()
+        obtained_str, img = get_pic()
         print("got str: [" +  obtained_str + "], trash: [Trash]")
         if obtained_str == name:
-            return True
+            return True, img
         sleep(0.4)
-    return False
+    return False, img
 
-# print(verify_classes('Plastic'))
+print(verify_classes('Plastic', True))
