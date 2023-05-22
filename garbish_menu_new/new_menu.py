@@ -378,14 +378,14 @@ class pages():
         uncotaminated = Menu(" No ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" Yes ",text2center=(1000*wm, 460*hm),text2color=(255,59,59),student_id=id_card)
         uncotaminated = uncotaminated.main()
         if uncotaminated != " No ": 
-            self.fail()
+            self.fail(id_card)
             return ["Fail",trash_type,id_card]
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77),student_id=id_card)
         uncotaminated = page4.draw()
         temp, got_img = verify_classes(trash_type, True)
         #temp=True
         if not temp:
-            self.fail()
+            self.fail(id_card)
             return ["Fail",trash_type,id_card]
         material_num = 0
         for i in range(3):
@@ -402,7 +402,7 @@ class pages():
             weight_inrange = True
         else:
             weight_inrange = False
-            self.too_heavy()
+            self.too_heavy(id_card)
             return ["Fail",trash_type,id_card]
         page5 = Menu(" Bin Unlocked",(800*wm,460*hm),"Place trash on tray for identification","Trash is Acceptable",text1color=(97,255,77),student_id=id_card)
         unlocking = page5.draw()
@@ -415,12 +415,12 @@ class pages():
             return ["Success",trash_type,val,id_card]
         return ["Success",trash_type,val,id_card]
         
-    def fail(self):
-        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
+    def fail(self,student_id):
+        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77),student_id=student_id)
         fail.main()
         
-    def too_heavy(self):
-        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is too heavy","Please try again!",text1color=(97,255,77))
+    def too_heavy(self,student_id):
+        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is too heavy","Please try again!",text1color=(97,255,77),student_id=student_id)
         fail.main()
         
     def events(self):

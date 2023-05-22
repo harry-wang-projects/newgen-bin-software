@@ -1,14 +1,15 @@
 from time import sleep
-import serial
 
 #set mode = 0 to disable reading serial
-mode = 1
+mode = 0
 weightmode = 0
 
-ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=5)
-ser.flush()
+if mode==1:
+    import serial
+    ser = serial.Serial('/dev/ttyUSB0', 115200, timeout=5)
+    ser.flush()
 
-ser.write(b'R')
+    ser.write(b'R')
 
 
 def unlock():
