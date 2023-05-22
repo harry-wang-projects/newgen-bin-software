@@ -1,7 +1,7 @@
 from time import sleep
 
 #set mode = 0 to disable reading serial
-mode = 0
+mode = 1
 weightmode = 0
 
 if mode==1:
@@ -57,7 +57,7 @@ def get_weight():
             print("newline:", line) 
             lhs = main[len(main) - 1].split("]", 2)
             print("lhs:", lhs)
-            return int(lhs[0])
+            return abs(int(lhs[0]))
         else:
             continue
 

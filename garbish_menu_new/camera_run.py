@@ -49,8 +49,8 @@ def get_pic():
 
     new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE), interpolation = cv2.INTER_AREA)
 
-    cv2.imshow("asdf", new_array)
-    cv2.waitKey(1000)
+    #cv2.imshow("asdf", new_array)
+    #cv2.waitKey(1000)
 
     new_array = np.asarray(new_array, dtype=np.float32).reshape(1, 224, 224, 3)
 

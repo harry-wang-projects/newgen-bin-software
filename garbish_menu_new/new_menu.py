@@ -382,7 +382,7 @@ class pages():
             return ["Fail",trash_type,id_card]
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77),student_id=id_card)
         uncotaminated = page4.draw()
-        temp, got_img = verify_classes(trash_type, True)
+        temp, got_img = verify_classes(trash_type, False)
         #temp=True
         if not temp:
             self.fail(id_card)
