@@ -374,7 +374,7 @@ class pages():
             msg = idle.main()
             return 
         
-    def page(self):
+    def page(self): #use weight to detect change and when change move to page4
         temp = self.cycle()
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77))
         loading = page4.draw()
