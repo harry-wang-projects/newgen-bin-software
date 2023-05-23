@@ -384,7 +384,6 @@ class pages():
         temp = self.cycle()
         page3 = Menu("  Go! ",(800*wm,460*hm),"Place Item on Tray","Plastic Only",text1color=(97,255,77))
         loading = page3.main(False) 
-        print("hello world")
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Camera Scanning Item","Loading...",text1color=(97,255,77))
         print("harry123", trash_type)
         loading = page4.draw()
@@ -433,7 +432,7 @@ class pages():
         
     def get_id(self):
         get_id = Menu(" 5R ",(850*wm,460*hm),"Type in or scan your ID Card","Your Reward:",text1color=(97,255,77),get_id=True)
-        id_card = get_id.main()
+        id_card = get_id.main(False)
         return id_card
         
     def events(self):
