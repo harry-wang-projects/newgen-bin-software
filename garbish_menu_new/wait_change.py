@@ -57,6 +57,5 @@ def wait_action():
         if get_action() == True:
             break
 
-sleep(5)
 wait_action()
 print("finished!")

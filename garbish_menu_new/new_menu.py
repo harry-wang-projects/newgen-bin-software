@@ -11,6 +11,7 @@ from screeninfo import get_monitors
 from garbage_list import trash_list
 from hardware_commands import get_weight, unlock
 from send_api import send_to_server, id_default, password_default
+from wait_change import wait_action, get_action
 
 if len(sys.argv)!=2:
     print("invalid argument count.")
@@ -328,7 +329,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             
         pygame.display.flip()
 
-    def main(self):
+    def main(self, wait_unlock):
         while self.keep_looping:
             self.events()
             self.draw()
@@ -336,6 +337,9 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             if self.touchquitcount==10:
                 pygame.quit()
                 sys.exit()
+            if wait_unlock == True:
+                if get_action() == True:
+                    return self.message
             if self.get_id:
                 if len(str(self.detect_id_card))==7:
                     self.detect_id_card = str(self.detect_id_card)
@@ -371,14 +375,15 @@ class pages():
             start = pygame.time.get_ticks()
             idle = Menu("6.9 KG",(850*wm,460*hm),"Tap the 6.9 KG button","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77))
             #id_card = '0012113'
-            msg = idle.main()
+            msg = idle.main(True)
             return 
         
     def page(self):
         temp = self.cycle()
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77))
+        print("harry123", trash_type)
         loading = page4.draw()
-        temp, got_img = verify_classes(trash_type, True)
+        temp, got_img = verify_classes(trash_type, False)
         temp=True
         if not temp:
             self.fail()
