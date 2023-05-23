@@ -68,29 +68,15 @@ def get_pic():
 
     return camresult, ret_img
 
-def get_pic_array():
+def get_raw():
     while not camera.isOpened():
         sleep(0.01)
-#      if number_of_colors == 1:
-#          img_array = cv2.imread(1, cv2.IMREAD_GRAYSCALE)  # read in the image, convert to grayscale
-#    else:
 #        img_array = cv2.imread(1)
     return_value, img_array = camera.read()
-    #print(return_value)
-    #print(img_array)
+#    print(return_value)
+#    print(img_array)
 
-    new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE), interpolation = cv2.INTER_AREA)
-
-    cv2.imshow("asdf", new_array)
-    cv2.waitKey(1000)
-
-    new_array = np.asarray(new_array, dtype=np.float32).reshape(1, 224, 224, 3)
-
-
-    new_array = (new_array / 127.5) - 1
-
-
-    return pickle.dumps(new_array)
+    return img_array
 
 def verify_classes(name, manual):
     img = np.empty((1, 224, 224 ,3))
