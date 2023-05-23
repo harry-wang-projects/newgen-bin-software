@@ -8,9 +8,10 @@ from camera_run import get_pic, verify_classes#, get_barcode
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
 # from barcode_get import get_barcode
-from garbage_list import trash_list
+from garbage_list import trash_list, plastic_mass, plastic_count, get_trash_stats
 from hardware_commands import get_weight, unlock
 from send_api import send_to_server, id_default, password_default
+from wait_change import wait_action, get_action
 
 if len(sys.argv)!=2:
     print("invalid argument count.")
@@ -328,7 +329,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             
         pygame.display.flip()
 
-    def main(self):
+    def main(self, wait_unlock):
         while self.keep_looping:
             self.events()
             self.draw()
@@ -336,6 +337,10 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             if self.touchquitcount==10:
                 pygame.quit()
                 sys.exit()
+            if wait_unlock == True:
+                if get_action() == True:
+                    time.sleep(1.5)
+                    return self.message
             if self.get_id:
                 if len(str(self.detect_id_card))==7:
                     self.detect_id_card = str(self.detect_id_card)
@@ -369,17 +374,22 @@ class pages():
                 "co2":"18982"
             }
             start = pygame.time.get_ticks()
-            idle = Menu("6.9 KG",(850*wm,460*hm),"Tap the 6.9 KG button","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77))
+            idle = Menu("Continue",(850*wm,460*hm), "Number of Bottles Recycled:", str(get_trash_stats()), font=xlname,font_render=xxlname, text1color=(97,255,77))
             #id_card = '0012113'
-            msg = idle.main()
+            msg = idle.main(True)
             return 
         
-    def page(self): #use weight to detect change and when change move to page4
+    def page(self):#use weight to detect change and when change move to page4
+        get_trash_stats()
         temp = self.cycle()
-        page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77))
+        page3 = Menu("  Go! ",(800*wm,460*hm),"Place Item on Tray","Plastic Only",text1color=(97,255,77))
+        loading = page3.main(False) 
+        print("hello world")
+        page4 = Menu("  Ok  ",(800*wm,460*hm),"Camera Scanning Item","Loading...",text1color=(97,255,77))
+        print("harry123", trash_type)
         loading = page4.draw()
-        temp, got_img = verify_classes(trash_type, True)
-        temp=True
+        temp, got_img = verify_classes(trash_type, False)
+        #temp=True
         if not temp:
             self.fail()
             return ["Fail",trash_type]
@@ -405,21 +415,21 @@ class pages():
         unlock()
 
         page6 = Menu(" Exit ",(650*wm,460*hm),"Your trash is being consumed","Recieve Your Reward?",text1color=(97,255,77),text2="ID ",text2center=(1000*wm, 460*hm),text2color=(97,255,77))
-        finish = page6.main()
+        finish = page6.main(False)
         if finish=="Exit ":
             return ["Success",trash_type,val]
         if finish == "ID ":
             id_card = self.get_id()
             send_to_server(id_default, password_default, id_card, 1, got_img, val, 1) 
-        return ["Success",trash_type,val,id_card]
+        return ["Success",trash_type,val,""]
         
     def fail(self):
         fail = Menu(" Okay",(800*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
-        fail.main()
+        fail.main(False)
         
     def too_heavy(self):
-        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is too heavy","Please try again!",text1color=(97,255,77))
-        fail.main()
+        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is contaminated","Please try again!",text1color=(97,255,77))
+        fail.main(False)
         
     def get_id(self):
         get_id = Menu(" 5R ",(850*wm,460*hm),"Type in or scan your ID Card","Your Reward:",text1color=(97,255,77),get_id=True)
