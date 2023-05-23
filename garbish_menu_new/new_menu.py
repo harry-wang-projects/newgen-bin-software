@@ -276,7 +276,9 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                                 self.key_id_card=str(self.key_id_card)+str(actual)
                         actual=actual+1
                 if self.key_enter.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
-                    self.enter = True
+                    #self.enter = True
+                    actual = 0
+                    self.key_id_card = ""
                 if self.key_del.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                     if len(self.key_id_card)>=1:
                         temp1 = len(self.key_id_card) #index
@@ -288,6 +290,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 self.touchquitcount+=1
             if self.text1_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.message = self.text1_text
+                self.enter = True
             if not self.text2_text==None and self.text2_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.message = self.text2_text
             if not self.text3_text==None and self.text3_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
@@ -339,7 +342,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 sys.exit()
             if wait_unlock == True:
                 if get_action() == True:
-                    time.sleep(1.5)
+                    time.sleep(0.5)
                     return self.message
             if self.get_id:
                 if len(str(self.detect_id_card))==7:
@@ -387,7 +390,7 @@ class pages():
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Camera Scanning Item","Loading...",text1color=(97,255,77))
         print("harry123", trash_type)
         loading = page4.draw()
-        temp, got_img = verify_classes(trash_type, False)
+        temp, got_img = verify_classes(trash_type, True)
         #temp=True
         if not temp:
             self.fail()
