@@ -339,6 +339,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 sys.exit()
             if wait_unlock == True:
                 if get_action() == True:
+                    time.sleep(1.5)
                     return self.message
             if self.get_id:
                 if len(str(self.detect_id_card))==7:
@@ -420,7 +421,7 @@ class pages():
         if finish == "ID ":
             id_card = self.get_id()
             send_to_server(id_default, password_default, id_card, 1, got_img, val, 1) 
-        return ["Success",trash_type,val,id_card]
+        return ["Success",trash_type,val,""]
         
     def fail(self):
         fail = Menu(" Okay",(800*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
