@@ -37,7 +37,7 @@ def get_action():
     #cv2.drawContours(frame1, contours, -1, (0, 255, 0), 2)
     i = 0
     for c in contours:
-        if cv2.contourArea(c) < 500:
+        if cv2.contourArea(c) < 1000:
             continue
         i += 1
         x, y, w, h = cv2.boundingRect(c)
