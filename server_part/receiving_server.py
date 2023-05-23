@@ -20,8 +20,19 @@ def post_json():
     array = pickle.loads(base64_bytes)
     #array = np.fromstring(decoded_thing, dtype=np.uint8)
     print(array.shape)
-    classname, confidence = predict_array(array)
-    response_data = {'class': classname[:(len(classname)) - 1], 'confidence': str(confidence)}
+    classname, confidence, weights = predict_array(array)
+
+    print(weights.shape)   
+    print(weights.size) 
+    ret_weights = '['
+    for i in range(weights.size):
+        print("i: ", i)
+        ret_weights += '\"' + str(weights[0][i]) + '\"'
+        if i != weights.size - 1:
+            ret_weights += ', '
+    ret_weights += ']'
+
+    response_data = {'class': classname[:(len(classname)) - 1], 'confidence': str(confidence), 'results': ret_weights}
     return jsonify(response_data)
 
 if __name__ == '__main__':

@@ -9,10 +9,10 @@ from classification_specs import IMG_SIZE, number_of_colors
 np.set_printoptions(suppress=True)
 
 # Load the model
-model = load_model("/home/0012113/newgen-bin-software/server_part/converted_keras/keras_model.h5", compile=False)
+model = load_model("/home/0012113/newgen-bin-software/server_part/may22_multi_model/keras_model.h5", compile=False)
 
 # Load the labels
-class_names = open("/home/0012113/newgen-bin-software/server_part/converted_keras/labels.txt", "r").readlines()
+class_names = open("/home/0012113/newgen-bin-software/server_part/may22_multi_model/labels.txt", "r").readlines()
 
 DATADIR = "./testing_pictures"
 CATEGORIES = ['metal', 'paper', 'plastic', 'trash']
@@ -59,7 +59,7 @@ def predict_array(array):
     # Print prediction and confidence score
     print("Class:", class_name[2:], end="")
     print("Confidence Score:", str(np.round(confidence_score * 100))[:-2], "%")
-    return class_name[2:], str(np.round(confidence_score * 100))[:-2]
+    return class_name[2:], str(np.round(confidence_score * 100))[:-2], prediction
 
 for filename in os.listdir(DATADIR):
     with open(os.path.join(DATADIR, filename), 'r') as f:
