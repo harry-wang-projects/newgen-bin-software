@@ -33,7 +33,10 @@ def send_image(tosend):
     print(x.content)
 
     decoded_thing = json.loads(x.content)
-    
+      
+    weights = decoded_thing["results"]
+    print("weights: ", weights, " ") 
+
     return decoded_thing["class"]
 
 def get_pic():
@@ -99,7 +102,7 @@ def verify_classes(name, manual):
 
 print(verify_classes('Plastic', True))
 #while(1):
-#    obtained, img = get_pic()
-#    print("got: " + obtained)
-#    cv2.imshow("asdf", img)
-#    cv2.waitKey(500)
+    #obtained, img = get_pic()
+    #print("got: " + obtained)
+    #cv2.imshow("asdf", img)
+    #cv2.waitKey(500)
