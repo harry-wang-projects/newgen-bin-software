@@ -292,7 +292,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             if not self.text3_text==None and self.text3_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.message = self.text3_text
             self.mouse_pos = None
-            if len(self.message) > 0 and self.message!="Scanning":
+            if len(self.message) > 0 and self.message!="Scanning" and self.message!=" 5R ":
                 self.keep_looping = False
         if touch_available and self.screen_touch:
             if self.get_id:
@@ -332,7 +332,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         while self.keep_looping:
             self.events()
             self.draw()
-            print(self.key_id_card,"id")
+            # print(self.key_id_card,"id")
             if self.touchquitcount==10:
                 pygame.quit()
                 sys.exit()
