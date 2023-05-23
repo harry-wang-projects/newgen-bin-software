@@ -8,9 +8,10 @@ from camera_run import get_pic, verify_classes#, get_barcode
 from pygame._sdl2 import touch
 from screeninfo import get_monitors
 # from barcode_get import get_barcode
-from garbage_list import trash_list
+from garbage_list import trash_list, plastic_mass, plastic_count, get_trash_stats
 from hardware_commands import get_weight, unlock
 from send_api import send_to_server, id_default, password_default
+from wait_change import wait_action, get_action
 
 if len(sys.argv)!=2:
     print("invalid argument count.")
@@ -46,7 +47,7 @@ underline = pygame.font.SysFont("arial",int(80*wm))
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 class Menu(): #creates a menu with 3 buttons and the title on the top.
-    def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,font_2=sname,font_render_2=mname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="Recycle Royale Bin UI",student_id=None,cycle=False,animation=None,get_id=None,timer=None): #spinner_chance adds up to 1, its a list.
+    def __init__(self,text1,text1center,small_title,big_title,font=name,font_render=xlname,font_2=sname,font_render_2=mname,text1color=(255,255,255),text2=None,text2center=None,text2color=(255,255,255),text3=None,text3center=None,text3color=(255,255,255),title="Recycle Royale Bin UI",student_id=None,cycle=False,animation=None,get_id=None,timer=None,exit_=True): #spinner_chance adds up to 1, its a list.
         self.width = screen_width
         self.height = screen_height
         self.screen=screen
@@ -95,6 +96,7 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
         self.credit = "Made by Edwin Fang & Harry Wang"
         self.credit_font = cname.render(self.credit, True, WHITE, None)
         self.credit_rect = self.credit_font.get_rect(center=(self.width/2,self.height*0.925))
+        self.exit_=exit_
         
         self.timer=timer
         self.get_id = get_id
@@ -116,8 +118,8 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             w,h = mname.size(" x ") #width and height of font
             self.key_del = self.key_del_font.get_rect(center=(self.width*0.05+(self.width/10)-w/2,self.height*0.9-h/2))
             
-            self.key_enter_font = mname.render(" c ",True,BLACK,None)
-            w,h = mname.size(" x ") #width and height of font
+            self.key_enter_font = mname.render("ok",True,BLACK,None)
+            w,h = mname.size("ok") #width and height of font
             self.key_enter = self.key_enter_font.get_rect(center=(self.width*0.05+(self.width/10)*3-w/2,self.height*0.9-h/2))
             self.enter=False
             actual = 1
@@ -175,17 +177,6 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             return "unsuccess"
 
     def events(self):
-        current_time = pygame.time.get_ticks()
-        # if (current_time-self.start_time)%100<=75:
-        #     self.next_frame=True
-        # if self.cycle and current_time-self.start_time>=self.cycle_time:
-        #     self.keep_looping=False
-        if (current_time-self.start_time)>=30000:
-            return "exit"
-        if self.timer !=None:
-            print(current_time-self.start_time)
-            if (current_time-self.start_time)>=self.timer:
-                return "timer"
         if touch_available:
             self.finger_data = touch.get_finger(0)
         for event in pygame.event.get():
@@ -275,7 +266,9 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                                 self.key_id_card=str(self.key_id_card)+str(actual)
                         actual=actual+1
                 if self.key_enter.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
-                    self.enter = True
+                    #self.enter = True
+                    actual = 0
+                    self.key_id_card = ""
                 if self.key_del.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                     if len(self.key_id_card)>=1:
                         temp1 = len(self.key_id_card) #index
@@ -287,12 +280,13 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                 self.touchquitcount+=1
             if self.text1_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.message = self.text1_text
+                self.enter = True
             if not self.text2_text==None and self.text2_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.message = self.text2_text
             if not self.text3_text==None and self.text3_rect.collidepoint(self.mouse_pos[0], self.mouse_pos[1])==1:
                 self.message = self.text3_text
             self.mouse_pos = None
-            if len(self.message) > 0 and self.message!="Scanning":
+            if len(self.message) > 0 and self.message!="Scanning" and self.message!=" 5R ":
                 self.keep_looping = False
         if touch_available and self.screen_touch:
             if self.get_id:
@@ -328,14 +322,19 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
             
         pygame.display.flip()
 
-    def main(self):
+    def main(self, wait_unlock):
         while self.keep_looping:
             self.events()
             self.draw()
-            print(self.key_id_card,"id")
+            # print(self.key_id_card,"id")
             if self.touchquitcount==10:
                 pygame.quit()
                 sys.exit()
+            if wait_unlock == True:
+                if get_action() == True:
+                    print("sleep 0.5")
+                    time.sleep(0.5)
+                    return self.message
             if self.get_id:
                 if len(str(self.detect_id_card))==7:
                     self.detect_id_card = str(self.detect_id_card)
@@ -347,6 +346,13 @@ class Menu(): #creates a menu with 3 buttons and the title on the top.
                         self.keep_looping=False
                         return self.key_id_card
                     self.enter=False
+            current_time = pygame.time.get_ticks()
+            if self.exit_ and (current_time-self.start_time)>=15000:
+                return "exit"
+            if self.timer !=None:
+                print(current_time-self.start_time)
+                if (current_time-self.start_time)>=self.timer:
+                    return "timer"
         print(self.message,"Success")
         return self.message
 
@@ -369,35 +375,27 @@ class pages():
                 "co2":"18982"
             }
             start = pygame.time.get_ticks()
-            idle = Menu("6.9 KG",(850*wm,460*hm),"Tap the 6.9 KG button","Total Waste Recycled",font=xlname,font_render=xxlname, text1color=(97,255,77))
+            idle = Menu("Continue",(850*wm,460*hm), "Number of Bottles Recycled:", str(get_trash_stats()), font=xlname,font_render=xxlname, text1color=(97,255,77),exit_=False)
             #id_card = '0012113'
-            msg = idle.main()
+            msg = idle.main(True)
             return 
         
-    def page(self):
+    def page(self):#use weight to detect change and when change move to page4
+        get_trash_stats()
         temp = self.cycle()
-        # id_card="0012029"
-        uncontaminated = Menu(" No ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" Yes ",text2center=(1000*wm, 460*hm),text2color=(255,59,59))
-        uncontaminated = uncontaminated.main()
-        if uncontaminated=="exit":
-            return ["exit"]
-        elif uncontaminated == " Yes ": 
-            self.fail()
-            return ["Fail",trash_type]
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","5",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","4",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","3",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","2",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","1",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77))
+        page3 = Menu("  Go! ",(800*wm,460*hm),"Place Item on Tray","Plastic Only",text1color=(97,255,77))
+        loading = page3.main(False) 
+        if loading=="exit":
+            print("exit")
+            return "exit"
+        page4 = Menu("  Ok  ",(800*wm,460*hm),"Camera Scanning Item","Loading...",text1color=(97,255,77))
+        print("harry123", trash_type)
         loading = page4.draw()
+        if loading=="exit":
+            print("exit")
+            return "exit"
         temp, got_img = verify_classes(trash_type, True)
-        temp=True
+        #temp=True
         if not temp:
             self.fail()
             return ["Fail",trash_type]
@@ -423,25 +421,26 @@ class pages():
         unlock()
 
         page6 = Menu(" Exit ",(650*wm,460*hm),"Your trash is being consumed","Recieve Your Reward?",text1color=(97,255,77),text2="ID ",text2center=(1000*wm, 460*hm),text2color=(97,255,77))
-        finish = page6.main()
+        finish = page6.main(False)
         if finish=="Exit ":
             return ["Success",trash_type,val]
         if finish == "ID ":
             id_card = self.get_id()
             send_to_server(id_default, password_default, id_card, 1, got_img, val, 1) 
-        return ["Success",trash_type,val,id_card]
+        return ["Success",trash_type,val,""]
         
     def fail(self):
         fail = Menu(" Okay",(800*wm,460*hm),"Your trash is not suitable for recycling","Please try again!",text1color=(97,255,77))
-        fail.main()
+        fail.main(False)
         
     def too_heavy(self):
-        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is too heavy","Please try again!",text1color=(97,255,77))
-        fail.main()
+        fail = Menu(" Okay",(800*wm,460*hm),"Your trash is contaminated","Please try again!",text1color=(97,255,77))
+        fail.main(False)
         
     def get_id(self):
         get_id = Menu(" 5R ",(850*wm,460*hm),"Type in or scan your ID Card","Your Reward:",text1color=(97,255,77),get_id=True)
-        id_card = get_id.main()
+        id_card = get_id.main(False)
+        print(id_card, "id_card in get_id")
         return id_card
         
     def events(self):
