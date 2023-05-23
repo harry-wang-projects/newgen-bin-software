@@ -376,24 +376,6 @@ class pages():
         
     def page(self):
         temp = self.cycle()
-        # id_card="0012029"
-        uncontaminated = Menu(" No ",(650*wm,460*hm),"Is your trash","Uncontaminated?",text1color=(97,255,77),text2=" Yes ",text2center=(1000*wm, 460*hm),text2color=(255,59,59))
-        uncontaminated = uncontaminated.main()
-        if uncontaminated=="exit":
-            return ["exit"]
-        elif uncontaminated == " Yes ": 
-            self.fail()
-            return ["Fail",trash_type]
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","5",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","4",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","3",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","2",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
-        # page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","1",text1color=(97,255,77),timer=1000)
-        # loading = page4.main()
         page4 = Menu("  Ok  ",(800*wm,460*hm),"Place trash on tray for identification","Loading...",text1color=(97,255,77))
         loading = page4.draw()
         temp, got_img = verify_classes(trash_type, True)
