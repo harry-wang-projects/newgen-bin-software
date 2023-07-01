@@ -48,6 +48,9 @@ y = tf.keras.utils.to_categorical(y, num_classes=label_count)
 for i in range(len(y)):
     y[i] = y[i] * 1.0
 
+x = x[:500]
+y = y[:500]
+
 #split data
 xtrain, xval, ytrain, yval = train_test_split(x, y, train_size=0.9, test_size=0.1, random_state=42)
 xtrain, xtest, ytrain, ytest = train_test_split(xtrain, ytrain, train_size=0.78, random_state=42)
@@ -156,8 +159,6 @@ print(NAME)
 
 #initial convolution
 model.add(Conv2D(64, (3, 3), input_shape = x.shape[1:], activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
-model.add(Conv2D(64, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
-model.add(Conv2D(128, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
 model.add(MaxPooling2D(pool_size = (2, 2)))
 
 #64 part
@@ -167,18 +168,15 @@ model.add(MaxPooling2D(pool_size = (2, 2)))
 
 #128 part
 model.add(Conv2D(128, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
-model.add(Conv2D(256, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
 model.add(MaxPooling2D(pool_size = (2, 2)))
 
 #256 part
-#model.add(Conv2D(256, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
-#model.add(MaxPooling2D(pool_size = (2, 2)))
-#model.add(Dropout(0.4))
+model.add(Conv2D(256, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
+model.add(MaxPooling2D(pool_size = (2, 2)))
 
 #512 part
 #model.add(Conv2D(512, (3, 3), activation = "relu", kernel_regularizer=regularizers.l2(l=0.01)))
 #model.add(MaxPooling2D(pool_size = (2, 2)))
-#model.add(Dropout(0.4))
 
 #1024!
 #model.add(Conv2D(1024, (3, 3), activation = "relu"))
@@ -189,12 +187,10 @@ model.add(Flatten())
 
 #end
 #model.add(Dense(1024, activation = 'relu'))
-model.add(Dense(180, activation = 'relu'))
+model.add(Dense(256, activation = 'relu'))
 model.add(Dropout(0.4))
-model.add(Dense(90, activation = 'relu'))
-model.add(Dropout(0.3))
 model.add(Dense(64, activation = 'relu'))
-model.add(Dropout(0.3))
+model.add(Dropout(0.4))
 model.add(Dense(label_count, activation = 'softmax'))
 
 
@@ -204,7 +200,7 @@ model.compile(loss = "categorical_crossentropy", optimizer = "adam", metrics = [
 model.summary()
 
 #run the model
-model.fit(xtrain, ytrain, batch_size = 64, epochs = 30, callbacks = [tensorboard_callback, cm_callback], validation_data=(xval, yval))
+model.fit(xtrain, ytrain, batch_size = 50, epochs = 10, callbacks = [tensorboard_callback, cm_callback], validation_data=(xval, yval))
 
 model.save("current_testing_model.model")
 
